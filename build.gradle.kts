@@ -15,6 +15,7 @@ val commitHash = Runtime
 
 plugins {
     kotlin("jvm") version "2.1.0"
+    kotlin("kapt") version "2.0.0"
     id("com.gradleup.shadow") version "8.3.5"
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.11"
     id("xyz.jpenilla.run-paper") version "2.3.1" // Adds runServer and runMojangMappedServer tasks for testing
@@ -49,6 +50,12 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
     paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
+
+    implementation("org.incendo:cloud-paper:2.0.0-beta.10")
+    implementation("org.incendo:cloud-annotations:2.0.0")
+    implementation("org.incendo:cloud-kotlin-extensions:2.0.0")
+    kapt("org.incendo:cloud-annotations:2.0.0")
+
 }
 
 tasks {
