@@ -68,7 +68,7 @@ tasks {
 
     shadowJar {
         isEnableRelocation = true
-        relocationPrefix = "net.tbdsmp.minecrafttwo.shade"
+        relocationPrefix = "net.tbdsmp.tbdseason4.shade"
     }
 }
 

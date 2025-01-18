@@ -37,5 +37,5 @@ class SeasonFourPlugin : JavaPlugin() {
 
 }
 
-val plugin = Bukkit.getPluginManager().getPlugin("minecrafttwo")!!
+val plugin = Bukkit.getPluginManager().getPlugin("tbdseason4")!!
 val logger = plugin.logger

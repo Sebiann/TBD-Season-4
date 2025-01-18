@@ -9,7 +9,7 @@ import org.incendo.cloud.annotations.processing.CommandContainer
 @CommandContainer
 class Echo {
     @Command("echo <text>")
-    @Permission("minecrafttwo.command.echo")
+    @Permission("tbdseason4.command.echo")
     fun echo(css: CommandSourceStack, text: Array<String>) {
         css.sender.sendMessage(text.joinToString(" "))
     }
