@@ -1,4 +1,6 @@
+import event.FurnaceSmelt
 import event.PlayerFish
+import event.PlayerJoin
 import event.ServerLinks
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.Bukkit
@@ -24,6 +26,8 @@ class SeasonFourPlugin : JavaPlugin() {
     private fun setupEvents() {
         server.pluginManager.registerEvents(ServerLinks(), this)
         server.pluginManager.registerEvents(PlayerFish(), this)
+        server.pluginManager.registerEvents(PlayerJoin(), this)
+        server.pluginManager.registerEvents(FurnaceSmelt(), this)
     }
 
     private fun registerCommands() {
