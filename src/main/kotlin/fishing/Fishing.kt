@@ -47,7 +47,7 @@ object Fishing {
     private fun rareFishAnimation(catcher: Player, item: Item, location: Location, fishRarity: FishRarity) {
         if(fishRarity.itemRarity == ItemRarity.EPIC || fishRarity.itemRarity == ItemRarity.LEGENDARY || fishRarity.itemRarity == ItemRarity.MYTHIC || fishRarity.itemRarity == ItemRarity.UNREAL) {
             for(player in Bukkit.getOnlinePlayers()) {
-                player.sendMessage(Component.text("${catcher.name} caught ").append(Component.text("${fishRarity.itemRarity.name.uppercase()} ", TextColor.fromHexString(fishRarity.itemRarity.rarityColour), TextDecoration.BOLD)).append(item.itemStack.displayName()).decoration(TextDecoration.BOLD, false).append(Component.text("!")).decoration(TextDecoration.BOLD, false))
+                player.sendMessage(Component.text("${catcher.name} caught ").append(Component.text("${fishRarity.itemRarity.name.uppercase()} ", TextColor.fromHexString(fishRarity.itemRarity.rarityColour), TextDecoration.BOLD)).append(item.itemStack.effectiveName().hoverEvent(item.itemStack)).decoration(TextDecoration.BOLD, false).append(Component.text("!")).decoration(TextDecoration.BOLD, false))
             }
         }
         when(fishRarity) {
@@ -133,7 +133,7 @@ object Fishing {
 
     private fun unrealEffect(location: Location) {
         object : BukkitRunnable() {
-            val soulAmount = 15
+            val soulAmount = 20
             var timer = 0
             val souls = ArrayList<Bat>()
             override fun run() {
@@ -143,12 +143,30 @@ object Fishing {
                     soul.velocity = Vector(0.0, 0.15, 0.0)
                 }
                 for(soul in souls) soul.world.spawnParticle(Particle.SCULK_SOUL, soul.location, 2, 0.0, 0.0, 0.0, 0.0)
-                if(timer >= 5 * 20) {
+                if(timer >= 10 * 20) {
                     for(soul in souls) soul.remove()
                     souls.clear()
                     this.cancel()
                 } else {
                     timer++
+                }
+            }
+        }.runTaskTimer(plugin, 0L, 1L)
+
+        object : BukkitRunnable() {
+            var loc = location.clone()
+            var radius = 0.0
+            var y = 0.0
+            override fun run() {
+                val x = radius * cos(y)
+                val z = radius * sin(y)
+                firework(Location(location.world, loc.x + x, loc.y + y, loc.z + z), flicker=false, trail=false, ItemRarity.UNREAL.rarityColourRGB, FireworkEffect.Type.BALL, false)
+
+                y += if(y >= 2.0) 0.1 else 0.05
+                radius += if(radius >= 1.5) 0.08 else 0.15
+
+                if(y >= 25) {
+                    cancel()
                 }
             }
         }.runTaskTimer(plugin, 0L, 1L)
