@@ -15,7 +15,7 @@ class PlayerFish : Listener {
         val item = event.caught as Item
 
         if (Tag.ITEMS_FISHES.isTagged(item.itemStack.type)) {
-            Fishing.playerCaughtFish(event.player, item, (event.caught as Item).location, null)
+            Fishing.playerCaughtFish(event.player, item, (event.caught as Item).location, null, null)
         }
     }
 }

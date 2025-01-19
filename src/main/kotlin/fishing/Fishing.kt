@@ -3,6 +3,7 @@ package fishing
 import plugin
 import item.ItemRarity
 import item.ItemType
+import item.SubRarity
 import lib.Sounds
 
 import net.kyori.adventure.text.Component
@@ -21,24 +22,26 @@ import java.time.Duration
 import kotlin.random.Random
 
 object Fishing {
-    fun playerCaughtFish(player: Player, item: Item, location: Location, forcedFishRarity: FishRarity?) {
+    fun playerCaughtFish(player: Player, item: Item, location: Location, forcedFishRarity: FishRarity?, forcedFishShiny: Boolean?) {
         val fishRarity = forcedFishRarity ?: FishRarity.getRandomRarity()
+        val isShiny = forcedFishShiny ?: SubRarity.isShiny()
 
         val fishMeta = item.itemStack.itemMeta
         fishMeta.displayName(Component.text(item.name).color(TextColor.fromHexString(fishRarity.itemRarity.rarityColour)).decoration(TextDecoration.ITALIC, false))
         fishMeta.lore(listOf(
-                Component.text("${fishRarity.itemRarity.rarityGlyph}${ItemType.FISH.typeGlyph}").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
+                Component.text("${fishRarity.itemRarity.rarityGlyph}${if(isShiny) "${SubRarity.SHINY.subRarityGlyph}${ItemType.FISH.typeGlyph}" else ItemType.FISH.typeGlyph}").color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
                 Component.text("Caught by ", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false).append(Component.text(player.name, NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
             )
         )
+        if(isShiny) fishMeta.setEnchantmentGlintOverride(true)
         item.itemStack.setItemMeta(fishMeta)
-        player.sendActionBar(Component.text("You caught a ").append(Component.text("${fishRarity.itemRarity.name.uppercase()} ", TextColor.fromHexString(fishRarity.itemRarity.rarityColour), TextDecoration.BOLD)).append(Component.text("${item.itemStack.type.name}!")).decoration(TextDecoration.BOLD, false))
+        player.sendActionBar(Component.text("Caught ").append(Component.text("${fishRarity.itemRarity.name.uppercase()} ", TextColor.fromHexString(fishRarity.itemRarity.rarityColour), TextDecoration.BOLD)).append(Component.text("${item.itemStack.type.name}!")).decoration(TextDecoration.BOLD, false))
         if(fishRarity.itemRarity == ItemRarity.LEGENDARY || fishRarity.itemRarity == ItemRarity.MYTHIC || fishRarity.itemRarity == ItemRarity.UNREAL) rareFishAnimation(player, item, location.add(0.0, 1.5, 0.0), fishRarity)
     }
 
     private fun rareFishAnimation(catcher: Player, item: Item, location: Location, fishRarity: FishRarity) {
         for(player in Bukkit.getOnlinePlayers()) {
-            player.sendMessage(Component.text("${catcher.name} caught a ").append(Component.text("${fishRarity.itemRarity.name.uppercase()} ", TextColor.fromHexString(fishRarity.itemRarity.rarityColour), TextDecoration.BOLD)).append(Component.text("${item.itemStack.type.name}!")).decoration(TextDecoration.BOLD, false))
+            player.sendMessage(Component.text("${catcher.name} caught ").append(Component.text("${fishRarity.itemRarity.name.uppercase()} ", TextColor.fromHexString(fishRarity.itemRarity.rarityColour), TextDecoration.BOLD)).append(item.itemStack.displayName()).decoration(TextDecoration.BOLD, false).append(Component.text("!")).decoration(TextDecoration.BOLD, false))
         }
         when(fishRarity) {
             FishRarity.LEGENDARY -> {
