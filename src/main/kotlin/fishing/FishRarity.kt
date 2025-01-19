@@ -6,9 +6,9 @@ import kotlin.random.Random
 
 enum class FishRarity(val weight: Double, val itemRarity: ItemRarity) {
     COMMON(49.75, ItemRarity.COMMON),
-    UNCOMMON(30.0, ItemRarity.UNCOMMON),
-    RARE(17.0, ItemRarity.RARE),
-    EPIC(15.0, ItemRarity.EPIC),
+    UNCOMMON(32.0, ItemRarity.UNCOMMON),
+    RARE(18.0, ItemRarity.RARE),
+    EPIC(12.0, ItemRarity.EPIC),
     LEGENDARY(1.0, ItemRarity.LEGENDARY),
     MYTHIC(0.2, ItemRarity.MYTHIC),
     UNREAL(0.05, ItemRarity.UNREAL),

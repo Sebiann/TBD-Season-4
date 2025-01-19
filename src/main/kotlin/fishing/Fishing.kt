@@ -18,6 +18,8 @@ import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
 
 import java.time.Duration
+import kotlin.math.cos
+import kotlin.math.sin
 
 import kotlin.random.Random
 
@@ -36,17 +38,28 @@ object Fishing {
         if(isShiny) fishMeta.setEnchantmentGlintOverride(true)
         item.itemStack.setItemMeta(fishMeta)
         player.sendActionBar(Component.text("Caught ").append(Component.text("${fishRarity.itemRarity.name.uppercase()} ", TextColor.fromHexString(fishRarity.itemRarity.rarityColour), TextDecoration.BOLD)).append(Component.text("${item.itemStack.type.name}!")).decoration(TextDecoration.BOLD, false))
-        if(fishRarity.itemRarity == ItemRarity.LEGENDARY || fishRarity.itemRarity == ItemRarity.MYTHIC || fishRarity.itemRarity == ItemRarity.UNREAL) rareFishAnimation(player, item, location.add(0.0, 1.5, 0.0), fishRarity)
+        if(fishRarity.itemRarity == ItemRarity.RARE || fishRarity.itemRarity == ItemRarity.EPIC || fishRarity.itemRarity == ItemRarity.LEGENDARY || fishRarity.itemRarity == ItemRarity.MYTHIC || fishRarity.itemRarity == ItemRarity.UNREAL) rareFishAnimation(player, item, location.add(0.0, 1.5, 0.0), fishRarity)
     }
 
     private fun rareFishAnimation(catcher: Player, item: Item, location: Location, fishRarity: FishRarity) {
-        for(player in Bukkit.getOnlinePlayers()) {
-            player.sendMessage(Component.text("${catcher.name} caught ").append(Component.text("${fishRarity.itemRarity.name.uppercase()} ", TextColor.fromHexString(fishRarity.itemRarity.rarityColour), TextDecoration.BOLD)).append(item.itemStack.displayName()).decoration(TextDecoration.BOLD, false).append(Component.text("!")).decoration(TextDecoration.BOLD, false))
+        if(fishRarity.itemRarity == ItemRarity.EPIC || fishRarity.itemRarity == ItemRarity.LEGENDARY || fishRarity.itemRarity == ItemRarity.MYTHIC || fishRarity.itemRarity == ItemRarity.UNREAL) {
+            for(player in Bukkit.getOnlinePlayers()) {
+                player.sendMessage(Component.text("${catcher.name} caught ").append(Component.text("${fishRarity.itemRarity.name.uppercase()} ", TextColor.fromHexString(fishRarity.itemRarity.rarityColour), TextDecoration.BOLD)).append(item.itemStack.displayName()).decoration(TextDecoration.BOLD, false).append(Component.text("!")).decoration(TextDecoration.BOLD, false))
+            }
         }
         when(fishRarity) {
+            FishRarity.RARE -> {
+                firework(location, flicker=false, trail=false, fishRarity.itemRarity.rarityColourRGB, FireworkEffect.Type.BURST, false)
+            }
+            FishRarity.EPIC -> {
+                for(player in Bukkit.getOnlinePlayers()) player.playSound(Sounds.EPIC_CATCH)
+                firework(location, flicker=false, trail=false, fishRarity.itemRarity.rarityColourRGB, FireworkEffect.Type.BALL, false)
+                epicEffect(location)
+            }
             FishRarity.LEGENDARY -> {
                 for(player in Bukkit.getOnlinePlayers()) player.playSound(Sounds.LEGENDARY_CATCH)
                 firework(location, flicker=true, trail=true, fishRarity.itemRarity.rarityColourRGB, FireworkEffect.Type.BALL_LARGE, false)
+                legendaryEffect(location)
             }
             FishRarity.MYTHIC -> {
                 for(player in Bukkit.getOnlinePlayers()) {
@@ -84,7 +97,7 @@ object Fishing {
                         override fun run() {
                             startLoc.world.spawnParticle(Particle.SONIC_BOOM, startLoc.add(0.0, i.toDouble(), 0.0), 1, 0.0, 0.0, 0.0, 0.0)
                             if(i == 15) {
-                                unrealBats(startLoc)
+                                unrealEffect(startLoc)
                                 startLoc.world.spawnParticle(Particle.SOUL_FIRE_FLAME, startLoc, 75, 0.0, 0.0, 0.0, 0.35)
                                 startLoc.world.spawnParticle(Particle.SCULK_SOUL, startLoc, 100, 0.0, 0.0, 0.0, 0.40)
                                 for(player in Bukkit.getOnlinePlayers()) player.playSound(Sounds.UNREAL_CATCH_SPAWN_BATS)
@@ -115,7 +128,7 @@ object Fishing {
         }
     }
 
-    private fun unrealBats(location: Location) {
+    private fun unrealEffect(location: Location) {
         object : BukkitRunnable() {
             val soulAmount = 15
             var timer = 0
@@ -146,6 +159,38 @@ object Fishing {
         bat.isInvulnerable = true
         bat.addScoreboardTag("soul.bat.${bat.uniqueId}")
         return bat
+    }
+
+    private fun epicEffect(location: Location) {
+        object : BukkitRunnable() {
+            var radius = 0.0
+            override fun run() {
+                if (radius > 4.0) {
+                    cancel()
+                    return
+                }
+                val step = Math.PI / 16
+                for (angle in 0 until 32) {
+                    val x = radius * cos(angle * step)
+                    val z = radius * sin(angle * step)
+                    val particleLocation = location.clone().add(x, -0.75, z)
+                    location.world.spawnParticle(Particle.WITCH, particleLocation, 1, 0.0, 0.0, 0.0, 0.0)
+                }
+                radius += 0.2
+            }
+        }.runTaskTimer(plugin, 0L, 2L)
+    }
+
+    private fun legendaryEffect(location: Location) {
+        val effectLoc = location.clone()
+        for(i in 0..3) {
+            object : BukkitRunnable() {
+                override fun run() {
+                    effectLoc.world.playSound(Sounds.LEGENDARY_CATCH_EXPLODE)
+                    effectLoc.world.spawnParticle(Particle.EXPLOSION, effectLoc.add(Random.nextDouble(0.25, 0.5), Random.nextDouble(0.25, 0.5), Random.nextDouble(0.25, 0.5)), 1, 0.0, 0.0, 0.0, 0.0)
+                }
+            }.runTaskLater(plugin, (i * 4L) + 35L)
+        }
     }
 
     private fun firework(location: Location, flicker: Boolean, trail: Boolean, rgb: Triple<Int, Int, Int>, fireworkType: FireworkEffect.Type, variedVelocity: Boolean) {
