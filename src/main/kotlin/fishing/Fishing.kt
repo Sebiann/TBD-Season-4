@@ -1,5 +1,6 @@
 package fishing
 
+import util.Keys.FISH_RARITY
 import plugin
 import item.ItemRarity
 import item.ItemType
@@ -14,6 +15,7 @@ import net.kyori.adventure.title.Title
 
 import org.bukkit.*
 import org.bukkit.entity.*
+import org.bukkit.persistence.PersistentDataType
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
 
@@ -33,6 +35,7 @@ object Fishing {
                 Component.text("Caught by ", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false).append(Component.text(player.name, NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
             )
         )
+        fishMeta.persistentDataContainer.set(FISH_RARITY, PersistentDataType.STRING, fishRarity.name)
         if(isShiny) fishMeta.setEnchantmentGlintOverride(true)
         item.itemStack.setItemMeta(fishMeta)
         player.sendActionBar(Component.text("Caught ").append(Component.text("${fishRarity.itemRarity.name.uppercase()} ", TextColor.fromHexString(fishRarity.itemRarity.rarityColour), TextDecoration.BOLD)).append(Component.text("${item.itemStack.type.name}!")).decoration(TextDecoration.BOLD, false))
