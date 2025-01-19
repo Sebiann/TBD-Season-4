@@ -1,4 +1,4 @@
-package event
+package event.player
 
 import fishing.Fishing
 
