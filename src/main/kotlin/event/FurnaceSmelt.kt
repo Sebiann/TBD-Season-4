@@ -22,7 +22,11 @@ class FurnaceSmelt : Listener {
                 event.result.effectiveName().color(TextColor.fromHexString(fishRarity.itemRarity.rarityColour)).decoration(TextDecoration.ITALIC, false)
             )
             resultMeta.lore(event.source.lore())
-            resultMeta.setEnchantmentGlintOverride(event.source.itemMeta.enchantmentGlintOverride)
+            var glint = false
+            if (event.source.itemMeta.hasEnchantmentGlintOverride()) {
+                glint = event.source.itemMeta.enchantmentGlintOverride
+            }
+            resultMeta.setEnchantmentGlintOverride(glint)
             event.result.setItemMeta(resultMeta)
         }
     }
