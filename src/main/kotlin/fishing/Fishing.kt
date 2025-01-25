@@ -144,7 +144,7 @@ object Fishing {
                                 catcher.world.time -= 12000
                                 item.isGlowing = false
                             }
-                            if(i == 9) {
+                            if(i == 19) {
                                 catcher.world.fullTime = previousFullTime
                                 catcher.world.time = previousDayTime
                             }
@@ -209,7 +209,7 @@ object Fishing {
                     soul.velocity = Vector(0.0, 0.15, 0.0)
                 }
                 for(soul in souls) soul.world.spawnParticle(Particle.SCULK_SOUL, soul.location, 2, 0.0, 0.0, 0.0, 0.0)
-                if(timer >= 10 * 20) {
+                if(timer >= 14 * 20) {
                     for(soul in souls) soul.remove()
                     souls.clear()
                     this.cancel()
