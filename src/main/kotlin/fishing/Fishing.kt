@@ -52,7 +52,7 @@ object Fishing {
         fishMeta.persistentDataContainer.set(FISH_RARITY, PersistentDataType.STRING, fishRarity.name)
         item.itemStack.setItemMeta(fishMeta)
 
-        player.sendActionBar(mm.deserialize("Caught <${fishRarity.itemRarity.rarityColour}><b>${fishRarity.itemRarity.name.uppercase()}</b> ${item.itemStack.effectiveName()}<reset>."))
+        player.sendActionBar(mm.deserialize("Caught <${fishRarity.itemRarity.rarityColour}><b>${fishRarity.itemRarity.name.uppercase()}</b> ").append(item.itemStack.effectiveName()).append(mm.deserialize("<reset>.")))
 
         if(runCatchGlobalMessage.contains(fishRarity)) catchText(player, item, fishRarity)
         if(runCatchGlobalTitle.contains(fishRarity)) catchTitle(player, item, fishRarity)
