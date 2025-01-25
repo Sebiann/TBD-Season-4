@@ -8,5 +8,11 @@ enum class ItemRarity(val rarityName : String, val rarityColour : String, val ra
     LEGENDARY("Legendary", "#ff7f27", "\uF005", Triple(255, 127, 39)),
     MYTHIC("Mythic", "#ff3374", "\uF006", Triple(255, 51, 116)),
     SPECIAL("Special", "#ec1c24", "\uF007", Triple(236, 28, 36)),
-    UNREAL("Unreal", "#8666e6", "\uF008", Triple(134, 102, 230))
+    UNREAL("Unreal", "#8666e6", "\uF008", Triple(134, 102, 230));
+
+    companion object {
+        fun startsWithVowel(rarity: ItemRarity): Boolean {
+            return rarity == UNCOMMON || rarity == EPIC || rarity == UNREAL
+        }
+    }
 }

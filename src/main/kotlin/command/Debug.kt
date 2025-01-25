@@ -21,7 +21,7 @@ import plugin
 @Suppress("unused", "unstableApiUsage")
 @CommandContainer
 class Debug {
-    @Command("debug simulate_catch <rarity> <shiny>")
+    @Command("debug catch <rarity> <shiny>")
     @Permission("tbdseason4.command.debug")
     fun echo(css: CommandSourceStack, @Argument("rarity") rarity: FishRarity, @Argument("shiny") shiny: Boolean) {
         if(css.sender is Player) {
@@ -31,8 +31,8 @@ class Debug {
             object : BukkitRunnable() {
                 override fun run() {
                     val item = loc.world.spawn(loc, Item::class.java)
-                    item.itemStack = ItemStack(Material.POTATO, 1)
-                    Fishing.playerCaughtFish(player, item, item.location, rarity, shiny)
+                    item.itemStack = ItemStack(Material.BEEF, 1)
+                    Fishing.catchFish(player, item, item.location, rarity, shiny)
                 }
             }.runTaskLater(plugin, 100L)
         }
