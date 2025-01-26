@@ -4,16 +4,55 @@ import item.ItemRarity
 import logger
 import kotlin.random.Random
 
-enum class FishRarity(val weight: Double, val itemRarity: ItemRarity) {
-    COMMON(49.75, ItemRarity.COMMON),
-    UNCOMMON(37.5, ItemRarity.UNCOMMON),
-    RARE(18.25, ItemRarity.RARE),
-    EPIC(6.0, ItemRarity.EPIC),
-    LEGENDARY(1.0, ItemRarity.LEGENDARY),
-    MYTHIC(0.2, ItemRarity.MYTHIC),
-    UNREAL(0.05, ItemRarity.UNREAL),
-    SPECIAL(0.0, ItemRarity.SPECIAL);
+/**
+ * Special fishing related properties for the rarities, all default to false
+ *
+ * @property showCatcher If the name of the catcher should be put on the fish
+ * @property isAnimated If the rarity has an animation
+ * @property sendGlobalMsg If a catch of this rarity should send a global message
+ * @property sendGlobalTitle If a catch of this rarity should send a global title
+ * @property retainData If ItemMeta should be retained on cooking for this rarity
+ */
+data class RarityProperties(
+    val showCatcher: Boolean = false,
+    val isAnimated: Boolean = false,
+    val sendGlobalMsg: Boolean = false,
+    val sendGlobalTitle: Boolean = false,
+    val retainData: Boolean = false
+)
 
+/**
+ * @param weight Weight in % out of 100.0
+ * @param itemRarity Item rarity used for display purposes
+ * @param props Special display properties of the rarity
+ */
+enum class FishRarity(val weight: Double, val itemRarity: ItemRarity, val props: RarityProperties) {
+    COMMON(49.75, ItemRarity.COMMON, RarityProperties()),
+    UNCOMMON(37.5, ItemRarity.UNCOMMON, RarityProperties()),
+    RARE(18.25, ItemRarity.RARE, RarityProperties(isAnimated = true)),
+    EPIC(6.0, ItemRarity.EPIC, RarityProperties(isAnimated = true, sendGlobalMsg = true)),
+    LEGENDARY(1.0, ItemRarity.LEGENDARY, RarityProperties(
+        isAnimated = true,
+        sendGlobalMsg = true,
+        showCatcher = true,
+        retainData = true)),
+    MYTHIC(0.2, ItemRarity.MYTHIC, RarityProperties(
+        isAnimated = true,
+        sendGlobalMsg = true,
+        sendGlobalTitle = true,
+        showCatcher = true,
+        retainData = true)),
+    UNREAL(0.05, ItemRarity.UNREAL, RarityProperties(
+        isAnimated = true,
+        sendGlobalMsg = true,
+        sendGlobalTitle = true,
+        showCatcher = true,
+        retainData = true)),
+    SPECIAL(0.0, ItemRarity.SPECIAL, RarityProperties(
+        sendGlobalMsg = true,
+        sendGlobalTitle = true,
+        showCatcher = true,
+        retainData = true));
 
     companion object {
         fun getRandomRarity(): FishRarity {

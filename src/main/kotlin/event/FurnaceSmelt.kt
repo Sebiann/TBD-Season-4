@@ -15,19 +15,26 @@ class FurnaceSmelt : Listener {
     fun onFurnaceSmelt(event: FurnaceSmeltEvent) {
         val fishRarityStr = event.source.persistentDataContainer.get(FISH_RARITY, PersistentDataType.STRING)
 
-        if (fishRarityStr != null) {
+        if (fishRarityStr != null) {// TODO infinite smelting bug, need to cancel in certain situations where output is already filled
             val fishRarity = FishRarity.valueOf(fishRarityStr)
-            val resultMeta = event.result.itemMeta
-            resultMeta.displayName(
-                event.result.effectiveName().color(TextColor.fromHexString(fishRarity.itemRarity.rarityColour)).decoration(TextDecoration.ITALIC, false)
-            )
-            resultMeta.lore(event.source.lore())
-            var glint = false
-            if (event.source.itemMeta.hasEnchantmentGlintOverride()) {
-                glint = event.source.itemMeta.enchantmentGlintOverride
+            if (fishRarity.props.retainData) {
+                copyFishData(event, fishRarity)
             }
-            resultMeta.setEnchantmentGlintOverride(glint)
-            event.result.setItemMeta(resultMeta)
         }
+    }
+
+    private fun copyFishData(event: FurnaceSmeltEvent, fishRarity: FishRarity) {
+        val resultMeta = event.result.itemMeta
+        resultMeta.displayName(
+            event.result.effectiveName().color(TextColor.fromHexString(fishRarity.itemRarity.colourHex))
+                .decoration(TextDecoration.ITALIC, false)
+        )
+        resultMeta.lore(event.source.lore())
+        var glint = false
+        if (event.source.itemMeta.hasEnchantmentGlintOverride()) {
+            glint = event.source.itemMeta.enchantmentGlintOverride
+        }
+        resultMeta.setEnchantmentGlintOverride(glint)
+        event.result.setItemMeta(resultMeta)
     }
 }

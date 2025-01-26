@@ -1,18 +1,14 @@
 package item
 
-enum class ItemRarity(val rarityName : String, val rarityColour : String, val rarityGlyph : String, val rarityColourRGB: Triple<Int, Int, Int>) {
-    COMMON("Common", "#ffffff", "\uF001", Triple(255, 255, 255)),
-    UNCOMMON("Uncommon", "#0ed145", "\uF002", Triple(14, 209, 69)),
-    RARE("Rare", "#00a8f3", "\uF003", Triple(0, 168, 243)),
-    EPIC("Epic", "#b83dba", "\uF004", Triple(184, 61, 186)),
-    LEGENDARY("Legendary", "#ff7f27", "\uF005", Triple(255, 127, 39)),
-    MYTHIC("Mythic", "#ff3374", "\uF006", Triple(255, 51, 116)),
-    SPECIAL("Special", "#ec1c24", "\uF007", Triple(236, 28, 36)),
-    UNREAL("Unreal", "#8666e6", "\uF008", Triple(134, 102, 230));
+import org.bukkit.Color
 
-    companion object {
-        fun startsWithVowel(rarity: ItemRarity): Boolean {
-            return rarity == UNCOMMON || rarity == EPIC || rarity == UNREAL
-        }
-    }
+enum class ItemRarity(val rarityName: String, val rarityGlyph: String, val colour: Color, val colourHex: String) {
+    COMMON("Common", "\uF001", Color.fromRGB(255, 255, 255), "#ffffff"),
+    UNCOMMON("Uncommon", "\uF002", Color.fromRGB(14, 209, 69), "#0ed145"),
+    RARE("Rare", "\uF003", Color.fromRGB(0, 168, 243), "#00a8f3"),
+    EPIC("Epic", "\uF004", Color.fromRGB(184, 61, 186), "#b83dba"),
+    LEGENDARY("Legendary", "\uF005", Color.fromRGB(255, 127, 39), "#ff7f27"),
+    MYTHIC("Mythic", "\uF006", Color.fromRGB(255, 51, 116), "#ff3374"),
+    SPECIAL("Special", "\uF007", Color.fromRGB(236, 28, 36), "#ec1c24"),
+    UNREAL("Unreal", "\uF008", Color.fromRGB(134, 102, 230), "#8666e6");
 }
