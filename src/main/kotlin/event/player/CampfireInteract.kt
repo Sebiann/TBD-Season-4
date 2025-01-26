@@ -13,7 +13,6 @@ import util.Keys.FISH_RARITY
 import util.secondsToTicks
 
 object CampfireInteract {
-    private val cookableFishRarities = listOf(FishRarity.COMMON, FishRarity.UNCOMMON, FishRarity.RARE)
     private val mm = MiniMessage.miniMessage()
 
     fun campfireInteractEvent(event: PlayerInteractEvent) {
@@ -24,7 +23,7 @@ object CampfireInteract {
 
         val fishRarityStr = item.persistentDataContainer.get(FISH_RARITY, PersistentDataType.STRING) ?: return
         val fishRarity = FishRarity.valueOf(fishRarityStr)
-        if (!cookableFishRarities.contains(fishRarity)) {
+        if (fishRarity.props.retainData) {
             event.isCancelled = true
             val player = event.player
             val block = event.clickedBlock!!
