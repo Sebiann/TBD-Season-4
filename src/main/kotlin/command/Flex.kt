@@ -21,8 +21,12 @@ class Flex {
         if (itemStack.isEmpty) {
             player.sendMessage("You are not holding an item.\n\nIdiot...\n")
         } else {
+            var stackSize = ""
+            if (itemStack.amount > 1) {
+                stackSize = "${itemStack.amount}x "
+            }
             Bukkit.getServer().sendMessage(
-                mm.deserialize("${player.name} shows off ")
+                mm.deserialize("${player.name} shows off $stackSize")
                     .append(itemStack.effectiveName().hoverEvent(itemStack))
             )
         }
