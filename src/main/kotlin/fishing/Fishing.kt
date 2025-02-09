@@ -135,20 +135,26 @@ object Fishing {
 
             FishRarity.LEGENDARY -> {
                 Bukkit.getServer().playSound(Sounds.LEGENDARY_CATCH)
-                firework(
-                    location,
-                    flicker = true,
-                    trail = true,
-                    fishRarity.itemRarity.colour,
-                    FireworkEffect.Type.BALL_LARGE,
-                    false
-                )
+                for (i in 0..2) {
+                    object : BukkitRunnable() {
+                        override fun run() {
+                            firework(
+                                location,
+                                flicker = true,
+                                trail = true,
+                                fishRarity.itemRarity.colour,
+                                FireworkEffect.Type.BALL_LARGE,
+                                false
+                            )
+                        }
+                    }.runTaskLater(plugin, i * 2L)
+                }
                 legendaryEffect(location)
             }
 
             FishRarity.MYTHIC -> {
                 Bukkit.getServer().playSound(Sounds.MYTHIC_CATCH)
-                for (i in 0..25) {
+                for (i in 0..15) {
                     object : BukkitRunnable() {
                         override fun run() {
                             firework(
@@ -156,7 +162,7 @@ object Fishing {
                                 flicker = true,
                                 trail = false,
                                 fishRarity.itemRarity.colour,
-                                if (i <= 19) FireworkEffect.Type.BALL_LARGE else FireworkEffect.Type.BALL,
+                                if (i <= 11) FireworkEffect.Type.BALL_LARGE else FireworkEffect.Type.BALL,
                                 false
                             )
                         }
@@ -287,9 +293,9 @@ object Fishing {
                     effectLoc.world.spawnParticle(
                         Particle.EXPLOSION,
                         effectLoc.add(
-                            Random.nextDouble(0.25, 0.5),
-                            Random.nextDouble(0.25, 0.5),
-                            Random.nextDouble(0.25, 0.5)
+                            Random.nextDouble(-0.25, 0.25),
+                            Random.nextDouble(-0.25, 0.25),
+                            Random.nextDouble(-0.25, 0.25)
                         ),
                         1,
                         0.0,
@@ -299,6 +305,22 @@ object Fishing {
                     )
                 }
             }.runTaskLater(plugin, (i * 4L) + 35L)
+        }
+
+        for (i in 0..20) {
+            object : BukkitRunnable() {
+                override fun run() {
+                    for (r in 0..3) {
+                        for (j in 0 until 32) {
+                            val angle = 2 * Math.PI * j / 32
+                            val x = r * cos(angle)
+                            val z = r * sin(angle)
+                            val particleLocation = location.clone().add(x, -1.5, z)
+                            location.world?.spawnParticle(Particle.FLAME, particleLocation, 1, 0.0, 0.0, 0.0, 0.0)
+                        }
+                    }
+                }
+            }.runTaskLater(plugin, i * 2L)
         }
     }
 

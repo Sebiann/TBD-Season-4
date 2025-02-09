@@ -7,7 +7,7 @@ enum class SubRarity(val subRarityName : String, val subRarityGlyph : String) {
 
     companion object {
         fun isShiny(): Boolean {
-            return Random.nextInt(0, 4000) == 0
+            return Random.nextInt(0, 4000) == 1
         }
     }
 }
