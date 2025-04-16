@@ -23,7 +23,7 @@ import plugin
 class Debug {
     @Command("debug catch <rarity> <shiny>")
     @Permission("tbdseason4.command.debug")
-    fun echo(css: CommandSourceStack, @Argument("rarity") rarity: FishRarity, @Argument("shiny") shiny: Boolean) {
+    fun debug(css: CommandSourceStack, @Argument("rarity") rarity: FishRarity, @Argument("shiny") shiny: Boolean) {
         if(css.sender is Player) {
             css.sender.sendMessage(Component.text("Simulating catch of rarity $rarity"))
             val player = css.sender as Player

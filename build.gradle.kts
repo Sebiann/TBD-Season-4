@@ -30,7 +30,7 @@ bukkitPluginYaml {
     main = "SeasonFourPlugin"
     load = BukkitPluginYaml.PluginLoadOrder.STARTUP
     authors.add("Austin Albrecht")
-    apiVersion = "1.21.4"
+    apiVersion = "1.21.5"
 }
 
 kotlin {
@@ -49,7 +49,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    paperweight.paperDevBundle("1.21.4-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.5-R0.1-SNAPSHOT")
 
     implementation("org.incendo:cloud-paper:2.0.0-beta.10")
     implementation("org.incendo:cloud-annotations:2.0.0")
