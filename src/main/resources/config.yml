@@ -1,0 +1,19 @@
+# Server links which are sent to players in the options menu.
+# Component supports minimessage.
+# Order is as shown in list menu. (Lower number higher up)
+links:
+  - component: "<rainbow>made you look lol</rainbow>"
+    uri: "https://links.tbdsmp.net/madeyoulook"
+    order: 1
+  - component: "<b><u><dark_red>BIGRAT DOT SOCIAL</dark_red></u></b>"
+    uri: "https://bigrat.social"
+    order: 2
+
+# Server resource packs which are applied on join.
+# URI is a direct link to a zip file.
+# Hash is the resourcepack hash, if empty will be downloaded and calculated.
+# Priority determines pack order, higher priority will put the pack higher up in the list.
+resource-packs:
+  - uri: "https://github.com/TBDSMP/resourcepack-s4/releases/latest/download/TBD-RP-S4.zip"
+    hash: ""
+    priority: 99

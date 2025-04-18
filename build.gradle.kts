@@ -56,6 +56,8 @@ dependencies {
     implementation("org.incendo:cloud-kotlin-extensions:2.0.0")
     kapt("org.incendo:cloud-annotations:2.0.0")
 
+    implementation("org.spongepowered:configurate-yaml:4.2.0")
+    implementation("org.spongepowered:configurate-extra-kotlin:4.2.0")
 }
 
 tasks {
@@ -67,8 +69,12 @@ tasks {
     }
 
     shadowJar {
-        isEnableRelocation = true
-        relocationPrefix = "net.tbdsmp.tbdseason4.shade"
+        val shadowPkg = "net.tbdsmp.tbdseason4.shade"
+
+        relocate("org.incendo", "${shadowPkg}.org.incendo")
+        relocate("org.spongepowered", "${shadowPkg}.org.spongepowered")
+
+        mergeServiceFiles()
     }
 }
 
