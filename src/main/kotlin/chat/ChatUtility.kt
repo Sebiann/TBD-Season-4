@@ -43,7 +43,7 @@ object ChatUtility {
     /** Sends a message to the admin channel which includes all online admins. **/
     fun broadcastAdmin(rawMessage: String, isSilent: Boolean) {
         val admin = Audience.audience(Bukkit.getOnlinePlayers()).filterAudience { (it as Player).hasPermission("tbd.group.admin") }
-        admin.sendMessage(allTags.deserialize("<speccolour>[<reset><prefix:admin><speccolour>]<reset> $rawMessage"))
+        admin.sendMessage(allTags.deserialize("<gray>[<reset><prefix:admin><gray>]<reset> $rawMessage"))
         if(!isSilent) {
             admin.playSound(Sounds.ADMIN_MESSAGE)
         }
@@ -52,7 +52,7 @@ object ChatUtility {
     /** Sends a message to the dev channel which includes all online devs. **/
     fun broadcastDev(rawMessage: String, isSilent: Boolean) {
         val dev = Audience.audience(Bukkit.getOnlinePlayers()).filterAudience { (it as Player).hasPermission("tbd.group.dev") }
-        dev.sendMessage(allTags.deserialize("<speccolour>[<reset><prefix:dev><speccolour>]<reset> $rawMessage"))
+        dev.sendMessage(allTags.deserialize("<gray>[<reset><prefix:dev><gray>]<reset> $rawMessage"))
         if(!isSilent) {
             dev.playSound(Sounds.ADMIN_MESSAGE)
         }
