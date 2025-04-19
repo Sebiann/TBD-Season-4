@@ -4,8 +4,10 @@ import Config
 import ResourcePack
 import chat.Formatting
 import logger
+import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.resource.ResourcePackInfo
 import net.kyori.adventure.resource.ResourcePackRequest
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -26,6 +28,8 @@ class PlayerJoin : Listener {
 
     @EventHandler
     fun onPlayerJoin(e: PlayerJoinEvent) {
+        sendTabList(e.player)
+
         val resourcePackRequest = ResourcePackRequest.resourcePackRequest()
             .packs(resourcePacks)
             .prompt(mm.deserialize("<gradient:#ff77a8:#ff510c>Please download the required resource packs for TBD</gradient>"))
@@ -33,6 +37,11 @@ class PlayerJoin : Listener {
 
         e.player.sendResourcePacks(resourcePackRequest)
         e.joinMessage(Formatting.allTags.deserialize("<tbdcolour>${e.player.name}<reset> joined the game."))
+    }
+
+    private fun sendTabList(audience: Audience) {
+        audience.sendPlayerListHeader(mm.deserialize("<newline><newline><newline><newline><newline>     \uF015    <newline>"))
+        audience.sendPlayerListFooter(mm.deserialize("<newline><gradient:#ff510c:#ff77a8>  Welcome to TBD Season 4!  <newline>"))
     }
 
     private fun loadResourcePacks(configPacks: List<ResourcePack>) {
