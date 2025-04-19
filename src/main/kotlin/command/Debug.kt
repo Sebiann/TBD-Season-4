@@ -6,6 +6,7 @@ import fishing.Fishing
 import io.papermc.paper.command.brigadier.CommandSourceStack
 
 import net.kyori.adventure.text.Component
+import org.bukkit.GameMode
 
 import org.bukkit.Material
 import org.bukkit.entity.Item
@@ -25,16 +26,18 @@ class Debug {
     @Permission("tbdseason4.command.debug")
     fun debug(css: CommandSourceStack, @Argument("rarity") rarity: FishRarity, @Argument("shiny") shiny: Boolean) {
         if(css.sender is Player) {
-            css.sender.sendMessage(Component.text("Simulating catch of rarity $rarity"))
             val player = css.sender as Player
-            val loc = player.location
-            object : BukkitRunnable() {
-                override fun run() {
-                    val item = loc.world.spawn(loc, Item::class.java)
-                    item.itemStack = ItemStack(Material.BEEF, 1)
-                    Fishing.catchFish(player, item, item.location, rarity, shiny)
-                }
-            }.runTaskLater(plugin, 100L)
+            if(player.gameMode == GameMode.CREATIVE) {
+                css.sender.sendMessage(Component.text("Simulating catch of rarity $rarity"))
+                val loc = player.location
+                object : BukkitRunnable() {
+                    override fun run() {
+                        val item = loc.world.spawn(loc, Item::class.java)
+                        item.itemStack = ItemStack(Material.BEEF, 1)
+                        Fishing.catchFish(player, item, item.location, rarity, shiny)
+                    }
+                }.runTaskLater(plugin, 100L)
+            }
         }
     }
 }

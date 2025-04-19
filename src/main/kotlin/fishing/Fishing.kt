@@ -1,16 +1,17 @@
 package fishing
 
+import chat.Formatting.allTags
 import util.Keys.FISH_RARITY
 import plugin
 import item.ItemRarity
 import item.ItemType
 import item.SubRarity
 import lib.Sounds
+import logger
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
-import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.title.Title
 
 import org.bukkit.*
@@ -29,8 +30,6 @@ import kotlin.math.sin
 import kotlin.random.Random
 
 object Fishing {
-    private val mm = MiniMessage.miniMessage()
-
     fun catchFish(
         player: Player,
         item: Item,
@@ -42,21 +41,21 @@ object Fishing {
         val isShiny = forcedFishShiny ?: SubRarity.isShiny()
 
         val caughtByLore =
-            if (fishRarity.props.showCatcher || isShiny) mm.deserialize("<reset><white>Caught by <yellow>${player.name}<white>.")
+            if (fishRarity.props.showCatcher || isShiny) allTags.deserialize("<reset><white>Caught by <yellow>${player.name}<white>.")
                 .decoration(TextDecoration.ITALIC, false) else null
         val fishMeta = item.itemStack.itemMeta
         fishMeta.displayName(
-            mm.deserialize("<${fishRarity.itemRarity.colourHex}>${item.name}").decoration(TextDecoration.ITALIC, false)
+            allTags.deserialize("<${fishRarity.itemRarity.colourHex}>${item.name}").decoration(TextDecoration.ITALIC, false)
         )
         fishMeta.lore(
             if (caughtByLore == null) {
                 listOf(
-                    mm.deserialize("<reset><white>${fishRarity.itemRarity.rarityGlyph}${ItemType.FISH.typeGlyph}")
+                    allTags.deserialize("<reset><white>${fishRarity.itemRarity.rarityGlyph}${ItemType.FISH.typeGlyph}")
                         .decoration(TextDecoration.ITALIC, false)
                 )
             } else {
                 listOf(
-                    mm.deserialize("<reset><white>${fishRarity.itemRarity.rarityGlyph}${if (isShiny) "<reset><white>${SubRarity.SHINY.subRarityGlyph}${ItemType.FISH.typeGlyph}" else "<reset><white>${ItemType.FISH.typeGlyph}"}")
+                    allTags.deserialize("<reset><white>${fishRarity.itemRarity.rarityGlyph}${if (isShiny) "<reset><white>${SubRarity.SHINY.subRarityGlyph}${ItemType.FISH.typeGlyph}" else "<reset><white>${ItemType.FISH.typeGlyph}"}")
                         .decoration(TextDecoration.ITALIC, false), caughtByLore
                 )
             }
@@ -66,13 +65,14 @@ object Fishing {
         item.itemStack.setItemMeta(fishMeta)
 
         player.sendActionBar(
-            mm.deserialize("Caught <${fishRarity.itemRarity.colourHex}><b>${fishRarity.itemRarity.name.uppercase()}</b> ")
-                .append(item.itemStack.effectiveName()).append(mm.deserialize("<reset>."))
+            allTags.deserialize("Caught <${fishRarity.itemRarity.colourHex}><b>${fishRarity.itemRarity.name.uppercase()}</b> ")
+                .append(item.itemStack.effectiveName()).append(allTags.deserialize("<reset>."))
         )
 
         if (fishRarity.props.sendGlobalMsg) catchText(player, item, fishRarity)
         if (fishRarity.props.sendGlobalTitle) catchTitle(player, item, fishRarity)
         if (fishRarity.props.isAnimated) catchAnimation(player, item, location.add(0.0, 1.75, 0.0), fishRarity)
+        if (fishRarity in listOf(FishRarity.LEGENDARY, FishRarity.MYTHIC, FishRarity.UNREAL)) logger.info("(FISHING) ${player.name} caught $fishRarity ${item.name}.")
     }
 
     private fun catchText(catcher: Player, item: Item, fishRarity: FishRarity) {
@@ -84,7 +84,7 @@ object Fishing {
     private fun catchTitle(catcher: Player, item: Item, fishRarity: FishRarity) {
         Bukkit.getServer().showTitle(
             Title.title(
-                mm.deserialize("<${fishRarity.itemRarity.colourHex}><b>${fishRarity.itemRarity.rarityName.uppercase()}<reset>"),
+                allTags.deserialize("<${fishRarity.itemRarity.colourHex}><b>${fishRarity.itemRarity.rarityName.uppercase()}<reset>"),
                 playerCaughtFishComponent(fishRarity, catcher, item),
                 Title.Times.times(Duration.ofSeconds(1L), Duration.ofSeconds(1L), Duration.ofSeconds(1L))
             )
@@ -95,7 +95,7 @@ object Fishing {
         fishRarity: FishRarity,
         catcher: Player,
         item: Item
-    ) = mm.deserialize(
+    ) = allTags.deserialize(
         "<${fishRarity.itemRarity.colourHex}>${catcher.name}<reset> caught a${
             if (fishRarity.itemRarity.rarityName.startsWithVowel()) "n " else " "
         }<${fishRarity.itemRarity.colourHex}><b>${fishRarity.name}</b> ${
