@@ -10,8 +10,10 @@ import org.incendo.cloud.annotations.Argument
 import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.CommandDescription
 import org.incendo.cloud.annotations.Permission
+import org.incendo.cloud.annotations.processing.CommandContainer
 
 @Suppress("unused", "unstableApiUsage")
+@CommandContainer
 class Admin {
     @Command("ac <text>")
     @CommandDescription("Sends the specified message to admin chat.")
