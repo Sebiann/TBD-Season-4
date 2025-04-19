@@ -1,7 +1,5 @@
 import event.*
-import event.player.PlayerFish
-import event.player.PlayerInteract
-import event.player.PlayerJoin
+import event.player.*
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
@@ -11,6 +9,9 @@ import org.incendo.cloud.paper.PaperCommandManager
 import org.spongepowered.configurate.kotlin.extensions.get
 import org.spongepowered.configurate.kotlin.objectMapperFactory
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader
+import util.NoxesiumChannel
+import util.messenger.BrandMessenger
+import util.messenger.NoxesiumMessenger
 import java.io.File
 
 @Suppress( "unstableApiUsage")
@@ -23,6 +24,7 @@ class SeasonFourPlugin : JavaPlugin() {
         readConfig()
         setupEvents()
         registerCommands()
+        registerMessengers()
     }
 
     override fun onDisable() {
@@ -33,6 +35,8 @@ class SeasonFourPlugin : JavaPlugin() {
         server.pluginManager.registerEvents(ServerLinks(config), this)
         server.pluginManager.registerEvents(PlayerFish(), this)
         server.pluginManager.registerEvents(PlayerJoin(config), this)
+        server.pluginManager.registerEvents(PlayerQuit(), this)
+        server.pluginManager.registerEvents(ChatEvent(), this)
         server.pluginManager.registerEvents(FurnaceSmelt(), this)
         server.pluginManager.registerEvents(PlayerInteract(), this)
     }
@@ -71,7 +75,15 @@ class SeasonFourPlugin : JavaPlugin() {
         config = node.get(Config::class)!!
         logger.info("Loaded config")
     }
+
+    private fun registerMessengers() {
+        logger.info("Registering plugin messengers.")
+        messenger.registerIncomingPluginChannel(this, "minecraft:brand", BrandMessenger())
+        messenger.registerIncomingPluginChannel(this, NoxesiumChannel.NOXESIUM_V1_CLIENT_INFORMATION_CHANNEL.channel, NoxesiumMessenger())
+        messenger.registerIncomingPluginChannel(this, NoxesiumChannel.NOXESIUM_V2_CLIENT_INFORMATION_CHANNEL.channel, NoxesiumMessenger())
+    }
 }
 
 val plugin = Bukkit.getPluginManager().getPlugin("tbdseason4")!!
 val logger = plugin.logger
+val messenger = Bukkit.getMessenger()

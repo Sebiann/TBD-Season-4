@@ -2,6 +2,7 @@ package event.player
 
 import Config
 import ResourcePack
+import chat.Formatting
 import logger
 import net.kyori.adventure.resource.ResourcePackInfo
 import net.kyori.adventure.resource.ResourcePackRequest
@@ -24,13 +25,14 @@ class PlayerJoin : Listener {
     }
 
     @EventHandler
-    fun onPlayerJoin(event: PlayerJoinEvent) {
+    fun onPlayerJoin(e: PlayerJoinEvent) {
         val resourcePackRequest = ResourcePackRequest.resourcePackRequest()
             .packs(resourcePacks)
             .prompt(mm.deserialize("<gradient:#ff77a8:#ff510c>Please download the required resource packs for TBD</gradient>"))
             .build()
 
-        event.player.sendResourcePacks(resourcePackRequest)
+        e.player.sendResourcePacks(resourcePackRequest)
+        e.joinMessage(Formatting.allTags.deserialize("<tbdcolour>${e.player.name}<reset> joined the game."))
     }
 
     private fun loadResourcePacks(configPacks: List<ResourcePack>) {

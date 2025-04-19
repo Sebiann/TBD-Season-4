@@ -30,6 +30,7 @@ bukkitPluginYaml {
     main = "SeasonFourPlugin"
     load = BukkitPluginYaml.PluginLoadOrder.STARTUP
     authors.add("Austin Albrecht")
+    authors.add("Byrt")
     apiVersion = "1.21.5"
 }
 
