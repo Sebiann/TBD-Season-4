@@ -377,7 +377,7 @@ object Fishing {
                 if(i % 2 == 0) {
                     location.world.spawnParticle(
                         Particle.ELECTRIC_SPARK,
-                        location.add(0.0, 0.5, 0.0),
+                        location.clone().add(0.0, 0.5, 0.0),
                         10, 0.25, 0.25, 0.25, 0.0
                     )
                 }
