@@ -39,6 +39,8 @@ class SeasonFourPlugin : JavaPlugin() {
         server.pluginManager.registerEvents(ChatEvent(), this)
         server.pluginManager.registerEvents(FurnaceSmelt(), this)
         server.pluginManager.registerEvents(PlayerInteract(), this)
+        server.pluginManager.registerEvents(DeathEvent(), this)
+        server.pluginManager.registerEvents(DamageEvent(), this)
     }
 
     private fun registerCommands() {

@@ -96,7 +96,7 @@ object Fishing {
         catcher: Player,
         item: Item
     ) = allTags.deserialize(
-        "<${fishRarity.itemRarity.colourHex}>${catcher.name}<reset> caught a${
+        "<tbdcolour>${catcher.name}<reset> caught a${
             if (fishRarity.itemRarity.rarityName.startsWithVowel()) "n " else " "
         }<${fishRarity.itemRarity.colourHex}><b>${fishRarity.name}</b> ${
             item.name.replaceFirstChar {
@@ -104,7 +104,7 @@ object Fishing {
                     Locale.getDefault()
                 ) else it.toString()
             }
-        }<reset>!"
+        }<reset>."
     )
 
     private fun catchAnimation(catcher: Player, item: Item, location: Location, fishRarity: FishRarity) {
@@ -393,6 +393,7 @@ object Fishing {
             Location(location.world, location.x, location.y + 1.0, location.z),
             Firework::class.java
         )
+        f.addScoreboardTag("tbd.fishing.firework")
         val fm = f.fireworkMeta
         fm.addEffect(
             FireworkEffect.builder()
