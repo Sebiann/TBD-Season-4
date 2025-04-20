@@ -2,6 +2,9 @@
 # Component supports minimessage.
 # Order is as shown in list menu. (Lower number higher up)
 links:
+  - component: "<#FFB84D>Server logo by <dark_green>🪴 plantskid"
+    uri: "https://plantskid.carrd.co/"
+    order: 0
   - component: "<rainbow>made you look lol</rainbow>"
     uri: "https://links.tbdsmp.net/madeyoulook"
     order: 1
