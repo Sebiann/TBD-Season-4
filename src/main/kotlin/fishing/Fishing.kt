@@ -71,7 +71,7 @@ object Fishing {
         if (fishRarity.props.sendGlobalTitle) catchTitle(player, item, fishRarity)
         if (fishRarity.props.isAnimated) catchAnimation(player, item, location.add(0.0, 1.75, 0.0), fishRarity)
         if (fishRarity in listOf(FishRarity.LEGENDARY, FishRarity.MYTHIC, FishRarity.UNREAL)) logger.info("(FISHING) ${player.name} caught $fishRarity ${item.name}.")
-        if (isShiny) shinyEffect(location)
+        if (isShiny) shinyEffect(item)
     }
 
     private fun catchText(catcher: Player, item: Item, fishRarity: FishRarity) {
@@ -369,19 +369,19 @@ object Fishing {
         }.runTaskTimer(plugin, 0L, 1L)
     }
 
-    private fun shinyEffect(location: Location) {
+    private fun shinyEffect(item: Item) {
         Bukkit.getServer().playSound(Sounds.SHINY_CATCH)
         object : BukkitRunnable() {
             var i = 0
             override fun run() {
                 if(i % 2 == 0) {
-                    location.world.spawnParticle(
+                    item.location.world.spawnParticle(
                         Particle.ELECTRIC_SPARK,
-                        location.clone().add(0.0, 0.5, 0.0),
+                        item.location.clone().add(0.0, 0.5, 0.0),
                         10, 0.25, 0.25, 0.25, 0.0
                     )
                 }
-                if(i >= 40) {
+                if(i >= 40 || item.isDead) {
                     cancel()
                 }
                 i++
