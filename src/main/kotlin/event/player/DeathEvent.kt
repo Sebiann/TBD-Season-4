@@ -3,7 +3,6 @@ package event.player
 import chat.Formatting
 import logger
 
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
 import net.kyori.adventure.text.TranslationArgument
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText
@@ -17,14 +16,10 @@ import kotlin.random.Random
 class DeathEvent: Listener {
     @EventHandler
     private fun onDeath(e: PlayerDeathEvent) {
-        if(e.deathMessage() !is TranslatableComponent || e.deathMessage() == null ) {
-            logger.info("Another plugin edited this death message.")
-            return
-        }
         if (e.player.isInvisible || e.player.killer?.isInvisible == true)
             logger.info("Original death message: \"${plainText().serialize(e.deathMessage()!!)}\"")
 
-        val component = e.deathMessage()!! as TranslatableComponent
+        val component = e.deathMessage() as? TranslatableComponent ?: run { logger.warning("Another plugin edited this death message."); return; }
         val newArgs = mutableListOf<TranslationArgument>()
         component.arguments().forEach {
             val str = plainText().serialize(it.asComponent())
@@ -39,10 +34,7 @@ class DeathEvent: Listener {
             }
         }
 
-        val newComponent = Component.translatable()
-            .key(component.key())
-            .arguments(newArgs)
-            .build()
+        val newComponent = component.arguments(newArgs)
         e.deathMessage(newComponent)
     }
 }
