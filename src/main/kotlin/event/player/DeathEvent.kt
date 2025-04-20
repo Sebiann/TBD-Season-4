@@ -2,11 +2,10 @@ package event.player
 
 import chat.Formatting
 import logger
-import net.kyori.adventure.text.Component
 
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
 import net.kyori.adventure.text.TranslationArgument
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText
 
 import org.bukkit.event.EventHandler
@@ -23,7 +22,7 @@ class DeathEvent: Listener {
             return
         }
         if (e.player.isInvisible || e.player.killer?.isInvisible == true)
-            logger.info("Original deathmesage: \"${plainText().serialize(e.deathMessage()!!)}\"")
+            logger.info("Original death message: \"${plainText().serialize(e.deathMessage()!!)}\"")
 
         val component = e.deathMessage()!! as TranslatableComponent
         val newArgs = mutableListOf<TranslationArgument>()
@@ -32,7 +31,7 @@ class DeathEvent: Listener {
             if ((str == e.player.name && e.player.isInvisible) || (str == e.player.killer?.name && e.player.killer?.isInvisible == true)) {
                 newArgs.add(TranslationArgument.component(
                     Formatting.allTags.deserialize(
-                        "<hover:show_text:'made you look'><obfuscated>${"*".repeat(Random.nextInt(4, 16))}</obfuscated></hover>"
+                        "<hover:show_text:'Made you look.'><obfuscated>${"*".repeat(Random.nextInt(4, 16))}</obfuscated></hover>"
                     )
                 ))
             } else {

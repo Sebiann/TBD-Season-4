@@ -9,8 +9,6 @@ import item.SubRarity
 import lib.Sounds
 import logger
 
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.title.Title
 
@@ -73,6 +71,7 @@ object Fishing {
         if (fishRarity.props.sendGlobalTitle) catchTitle(player, item, fishRarity)
         if (fishRarity.props.isAnimated) catchAnimation(player, item, location.add(0.0, 1.75, 0.0), fishRarity)
         if (fishRarity in listOf(FishRarity.LEGENDARY, FishRarity.MYTHIC, FishRarity.UNREAL)) logger.info("(FISHING) ${player.name} caught $fishRarity ${item.name}.")
+        if (isShiny) shinyEffect(location)
     }
 
     private fun catchText(catcher: Player, item: Item, fishRarity: FishRarity) {
@@ -86,7 +85,7 @@ object Fishing {
             Title.title(
                 allTags.deserialize("<${fishRarity.itemRarity.colourHex}><b>${fishRarity.itemRarity.rarityName.uppercase()}<reset>"),
                 playerCaughtFishComponent(fishRarity, catcher, item),
-                Title.Times.times(Duration.ofSeconds(1L), Duration.ofSeconds(1L), Duration.ofSeconds(1L))
+                Title.Times.times(Duration.ofMillis(250L), Duration.ofSeconds(3L), Duration.ofMillis(250L))
             )
         )
     }
@@ -188,17 +187,6 @@ object Fishing {
                 val server = Bukkit.getServer()
                 server.playSound(Sounds.UNREAL_CATCH)
                 server.playSound(Sounds.UNREAL_CATCH_SPAWN)
-                server.showTitle(
-                    Title.title(
-                        Component.text(
-                            fishRarity.itemRarity.name.uppercase(),
-                            TextColor.fromHexString(fishRarity.itemRarity.colourHex),
-                            TextDecoration.BOLD
-                        ),
-                        Component.text("${catcher.name} caught a ${item.itemStack.type.name}!"),
-                        Title.Times.times(Duration.ofSeconds(1L), Duration.ofSeconds(1L), Duration.ofSeconds(1L))
-                    )
-                )
                 val previousDayTime = catcher.world.time
                 val previousFullTime = catcher.world.fullTime
                 if (catcher.world.time < 6000) catcher.world.time += 6000 - catcher.world.time
@@ -379,6 +367,26 @@ object Fishing {
                 i++
             }
         }.runTaskTimer(plugin, 0L, 1L)
+    }
+
+    private fun shinyEffect(location: Location) {
+        Bukkit.getServer().playSound(Sounds.SHINY_CATCH)
+        object : BukkitRunnable() {
+            var i = 0
+            override fun run() {
+                if(i % 2 == 0) {
+                    location.world.spawnParticle(
+                        Particle.ELECTRIC_SPARK,
+                        location.add(0.0, 0.5, 0.0),
+                        10, 0.25, 0.25, 0.25, 0.0
+                    )
+                }
+                if(i >= 40) {
+                    cancel()
+                }
+                i++
+            }
+        }.runTaskTimer(plugin, 0L, 5L)
     }
 
     private fun firework(
