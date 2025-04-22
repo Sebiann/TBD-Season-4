@@ -23,7 +23,7 @@ import plugin
 @CommandContainer
 class Debug {
     @Command("debug catch <rarity> <shiny>")
-    @Permission("tbdseason4.command.debug")
+    @Permission("tbd.command.debug")
     fun debug(css: CommandSourceStack, @Argument("rarity") rarity: FishRarity, @Argument("shiny") shiny: Boolean) {
         if(css.sender is Player) {
             val player = css.sender as Player

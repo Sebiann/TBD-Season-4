@@ -1,3 +1,4 @@
+import chat.VisualChat
 import event.*
 import event.player.*
 import io.papermc.paper.command.brigadier.CommandSourceStack
@@ -20,15 +21,17 @@ class SeasonFourPlugin : JavaPlugin() {
     private lateinit var config: Config
 
     override fun onEnable() {
-        this.logger.info("We are so back")
+        this.logger.info("We are so back.")
         readConfig()
         setupEvents()
         registerCommands()
         registerMessengers()
+        VisualChat.clearChatEntities()
     }
 
     override fun onDisable() {
-        this.logger.info("It is so over")
+        this.logger.info("It is so over.")
+        VisualChat.clearChatEntities()
     }
 
     private fun setupEvents() {
@@ -75,7 +78,7 @@ class SeasonFourPlugin : JavaPlugin() {
 
         val node = loader.load()
         config = node.get(Config::class)!!
-        logger.info("Loaded config")
+        logger.info("Loaded configuration.")
     }
 
     private fun registerMessengers() {

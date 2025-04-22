@@ -45,13 +45,13 @@ object Noxesium {
 
     /**
      * Noxesium skull component builder that allows the displaying of player heads in chat for those that are utilising Noxesium.
+     * Standard coloured skull parameters maylook like: (uuid, false, 0, 0, 1.0)
      * @params
      * uuid: UUID of player's skull to build.
      * isGrayscale: Decide whether the skull should be coloured or grayscale.
      * advance: Moves skull horizontally in non-chat UIs.
      * ascent: Moves skull vertically.
      * scale: Scales the skull anchored by its top-left corner.
-     * Standard coloured skull params may look like: (uuid, false, 0, 0, 1.0)
      * */
     fun buildSkullComponent(uuid : UUID, isGrayscale : Boolean, advance : Int, ascent : Int, scale : Float) : Component {
         return Component.translatable("%nox_uuid%$uuid,$isGrayscale,$advance,$ascent,$scale", "").color(NamedTextColor.WHITE)

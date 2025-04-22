@@ -68,7 +68,7 @@ enum class FishRarity(val weight: Double, val itemRarity: ItemRarity, val props:
             }
 
             logger.warning("Unreachable code hit! No rarity selected")
-            return SPECIAL // Should be unreachable but default to small in case of issue
+            return SPECIAL // Should be unreachable but default to special in case of issue
         }
     }
 }
