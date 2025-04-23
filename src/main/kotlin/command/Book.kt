@@ -28,6 +28,8 @@ class Book {
                 ))
                 bookMeta.author(Formatting.restrictedTags.deserialize(name.joinToString(" ")))
                 book.itemMeta = bookMeta
+            } else {
+                player.sendMessage(Formatting.allTags.deserialize("<red>You're not holding a written book, you numpty."))
             }
         }
     }
@@ -45,6 +47,8 @@ class Book {
                 ))
                 bookMeta.title(Formatting.restrictedTags.deserialize(title.joinToString(" ")))
                 book.itemMeta = bookMeta
+            } else {
+                player.sendMessage(Formatting.allTags.deserialize("<red>You're not holding a written book, you silly goose."))
             }
         }
     }

@@ -1,6 +1,6 @@
 package command
 
-import chat.Formatting.allTags
+import chat.Formatting
 
 import io.papermc.paper.command.brigadier.CommandSourceStack
 
@@ -19,14 +19,14 @@ class Flex {
         val player = css.sender as Player
         val itemStack = player.inventory.itemInMainHand
         if (itemStack.isEmpty) {
-            player.sendMessage("You are not holding an item.\n\nIdiot...\n")
+            player.sendMessage(Formatting.allTags.deserialize("<red>You are not holding an item. Idiot...</red>"))
         } else {
             var stackSize = ""
             if (itemStack.amount > 1) {
                 stackSize = "${itemStack.amount}x "
             }
             Bukkit.getServer().sendMessage(
-                allTags.deserialize("${player.name} shows off $stackSize")
+                Formatting.allTags.deserialize("<tbdcolour>${player.name}</tbdcolour> shows off $stackSize")
                     .append(itemStack.effectiveName().hoverEvent(itemStack))
             )
         }
