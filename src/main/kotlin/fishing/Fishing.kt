@@ -120,7 +120,7 @@ object Fishing {
             }
 
             FishRarity.EPIC -> {
-                Bukkit.getServer().playSound(Sounds.EPIC_CATCH)
+                catcher.playSound(Sounds.EPIC_CATCH)
                 firework(
                     location,
                     flicker = false,
