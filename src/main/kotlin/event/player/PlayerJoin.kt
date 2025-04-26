@@ -35,6 +35,7 @@ class PlayerJoin : Listener {
             .build()
 
         e.player.sendResourcePacks(resourcePackRequest)
+        e.player.sendMessage(mm.deserialize("<red>⚠ <reset>Please <b>do not</b> break loot chests!"))
         e.joinMessage(Formatting.allTags.deserialize("<tbdcolour>${e.player.name}<reset> joined the game."))
     }
 
