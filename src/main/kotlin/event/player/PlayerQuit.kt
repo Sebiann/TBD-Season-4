@@ -12,6 +12,6 @@ class PlayerQuit: Listener {
     @EventHandler
     private fun onQuit(e: PlayerQuitEvent) {
         Noxesium.removeNoxesiumUser(e.player)
-        e.quitMessage(Formatting.allTags.deserialize("<tbdcolour>${e.player.name}<reset> left the game."))
+        e.quitMessage(Formatting.allTags.deserialize("<dark_gray>[<red>-<dark_gray>] <tbdcolour>${e.player.name}<reset> left the game."))
     }
 }

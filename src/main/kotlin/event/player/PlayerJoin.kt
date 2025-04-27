@@ -36,7 +36,7 @@ class PlayerJoin : Listener {
 
         e.player.sendResourcePacks(resourcePackRequest)
         e.player.sendMessage(mm.deserialize("<red>⚠ <reset>Please <b>do not</b> break loot chests!"))
-        e.joinMessage(Formatting.allTags.deserialize("<tbdcolour>${e.player.name}<reset> joined the game."))
+        e.joinMessage(Formatting.allTags.deserialize("<dark_gray>[<green>+<dark_gray>] <tbdcolour>${e.player.name}<reset> joined the game."))
     }
 
     private fun sendTabList(audience: Audience) {
