@@ -26,16 +26,19 @@ object GhostMode {
                 if(ghostPlayers.contains(player) && player.isOnline) {
                     for (viewer in Bukkit.getOnlinePlayers()) {
                         if (viewer != player) {
-                            if(viewer.location.distanceSquared(player.location) <= 10000) {
-                                val isPeripheral = isInPeripheralView(viewer, player)
-                                if(isPeripheral) {
-                                    viewer.showPlayer(plugin, player)
+                            if(player.world == viewer.world) {
+                                if(viewer.location.distanceSquared(player.location) <= 10000) {
+                                    val isPeripheral = isInPeripheralView(viewer, player)
+                                    if(isPeripheral) {
+                                        viewer.showPlayer(plugin, player)
+                                    } else {
+                                        viewer.hidePlayer(plugin, player)
+                                    }
                                 } else {
                                     viewer.hidePlayer(plugin, player)
                                 }
-                            } else {
-                                viewer.hidePlayer(plugin, player)
                             }
+
                         }
                     }
                 } else {
