@@ -4,6 +4,7 @@ import Config
 import ResourcePack
 import chat.Formatting
 import logger
+import lore.GhostMode
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.resource.ResourcePackInfo
 import net.kyori.adventure.resource.ResourcePackRequest
@@ -36,7 +37,13 @@ class PlayerJoin : Listener {
 
         e.player.sendResourcePacks(resourcePackRequest)
         e.player.sendMessage(mm.deserialize("<red>⚠ <reset>Please <b>do not</b> break loot chests!"))
-        e.joinMessage(Formatting.allTags.deserialize("<dark_gray>[<green>+<dark_gray>] <tbdcolour>${e.player.name}<reset> joined the game."))
+        if(e.player.name == "Byrtrum") {
+            e.joinMessage(null)
+            GhostMode.toggleGhostMode(e.player)
+        } else {
+            e.joinMessage(Formatting.allTags.deserialize("<dark_gray>[<green>+<dark_gray>] <tbdcolour>${e.player.name}<reset> joined the game."))
+        }
+
     }
 
     private fun sendTabList(audience: Audience) {

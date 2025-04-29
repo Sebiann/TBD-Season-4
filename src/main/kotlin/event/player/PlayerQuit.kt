@@ -12,6 +12,11 @@ class PlayerQuit: Listener {
     @EventHandler
     private fun onQuit(e: PlayerQuitEvent) {
         Noxesium.removeNoxesiumUser(e.player)
-        e.quitMessage(Formatting.allTags.deserialize("<dark_gray>[<red>-<dark_gray>] <tbdcolour>${e.player.name}<reset> left the game."))
+        if(e.player.name == "Byrtrum") {
+            e.quitMessage(null)
+        } else {
+            e.quitMessage(Formatting.allTags.deserialize("<dark_gray>[<red>-<dark_gray>] <tbdcolour>${e.player.name}<reset> left the game."))
+        }
+
     }
 }
