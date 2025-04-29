@@ -23,7 +23,7 @@ object GhostMode {
     private fun ghostModeTask(player: Player) {
         object : BukkitRunnable() {
             override fun run() {
-                if(ghostPlayers.contains(player)) {
+                if(ghostPlayers.contains(player) && player.isOnline) {
                     for (viewer in Bukkit.getOnlinePlayers()) {
                         if (viewer != player) {
                             if(viewer.location.distanceSquared(player.location) <= 10000) {
