@@ -9,6 +9,7 @@ import org.bukkit.Tag
 import org.bukkit.block.data.type.Campfire
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.persistence.PersistentDataType
+import util.Keys.FISH_IS_SHINY
 import util.Keys.FISH_RARITY
 import util.secondsToTicks
 
@@ -22,8 +23,10 @@ object CampfireInteract {
         if (!Tag.ITEMS_FISHES.isTagged(item.type)) return
 
         val fishRarityStr = item.persistentDataContainer.get(FISH_RARITY, PersistentDataType.STRING) ?: return
+        val isShiny = item.persistentDataContainer.get(FISH_IS_SHINY, PersistentDataType.BOOLEAN) ?: false
+
         val fishRarity = FishRarity.valueOf(fishRarityStr)
-        if (fishRarity.props.retainData) {
+        if (fishRarity.props.retainData || isShiny) {
             event.isCancelled = true
             val player = event.player
             val block = event.clickedBlock!!

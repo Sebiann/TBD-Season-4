@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.FurnaceSmeltEvent
 import org.bukkit.persistence.PersistentDataType
+import util.Keys.FISH_IS_SHINY
 import util.Keys.FISH_RARITY
 
 class FurnaceSmelt : Listener {
@@ -14,10 +15,11 @@ class FurnaceSmelt : Listener {
     @EventHandler
     fun onFurnaceSmelt(event: FurnaceSmeltEvent) {
         val fishRarityStr = event.source.persistentDataContainer.get(FISH_RARITY, PersistentDataType.STRING)
+        val isShiny = event.source.persistentDataContainer.get(FISH_IS_SHINY, PersistentDataType.BOOLEAN) ?: false
 
-        if (fishRarityStr != null) {// TODO infinite smelting bug, need to cancel in certain situations where output is already filled
+        if (fishRarityStr != null) {
             val fishRarity = FishRarity.valueOf(fishRarityStr)
-            if (fishRarity.props.retainData) {
+            if (fishRarity.props.retainData || isShiny) {
                 copyFishData(event, fishRarity)
             }
         }

@@ -15,7 +15,7 @@ import org.incendo.cloud.annotations.processing.CommandContainer
 class Flex {
     @Command("flex")
     @Permission("tbd.command.flex")
-    fun echo(css: CommandSourceStack) {
+    fun flex(css: CommandSourceStack) {
         val player = css.sender as Player
         val itemStack = player.inventory.itemInMainHand
         if (itemStack.isEmpty) {

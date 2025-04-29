@@ -17,6 +17,7 @@ import org.bukkit.entity.*
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
+import util.Keys.FISH_IS_SHINY
 import util.startsWithVowel
 
 import java.time.Duration
@@ -58,7 +59,10 @@ object Fishing {
                 )
             }
         )
-        if (isShiny) fishMeta.setEnchantmentGlintOverride(true)
+        if (isShiny) {
+            fishMeta.setEnchantmentGlintOverride(true)
+            fishMeta.persistentDataContainer.set(FISH_IS_SHINY, PersistentDataType.BOOLEAN, true)
+        }
         fishMeta.persistentDataContainer.set(FISH_RARITY, PersistentDataType.STRING, fishRarity.name)
         item.itemStack.setItemMeta(fishMeta)
 
