@@ -393,7 +393,7 @@ object Fishing {
         }.runTaskTimer(plugin, 0L, 5L)
     }
 
-    private fun firework(
+    fun firework(
         location: Location,
         flicker: Boolean,
         trail: Boolean,
