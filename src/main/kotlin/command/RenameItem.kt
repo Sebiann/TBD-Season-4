@@ -4,7 +4,7 @@ import chat.Formatting
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import lib.Sounds.RENAME_ITEM
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText
-import org.bukkit.Material
+
 import org.bukkit.Material.*
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -16,6 +16,7 @@ import org.incendo.cloud.annotations.processing.CommandContainer
 @Suppress("unused", "unstableApiUsage")
 @CommandContainer
 class RenameItem {
+
     @Command("rename-item <name>")
     @CommandDescription("Renames an item at the cost of 1 lapis.")
     @Permission("tbd.command.renameitem")
@@ -31,7 +32,7 @@ class RenameItem {
             player.sendMessage(Formatting.allTags.deserialize("<red>You need 1 lapis in your inventory to rename"))
             return
         }
-        val nameComponent = Formatting.restrictedTags.deserialize(name.joinToString(" "))
+        val nameComponent = Formatting.restrictedNoSkullTags.deserialize(name.joinToString(" "))
 
         if (plainText().serialize(nameComponent).length > 50) {
             player.sendMessage(Formatting.allTags.deserialize("<red>The maximum name length is 50 characters"))

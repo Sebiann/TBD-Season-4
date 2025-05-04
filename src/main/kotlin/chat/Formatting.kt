@@ -56,6 +56,19 @@ object Formatting {
         )
         .build()
 
+    val restrictedNoSkullTags = MiniMessage.builder()
+        .tags(
+            TagResolver.builder()
+                .resolver(StandardTags.color())
+                .resolver(StandardTags.decorations())
+                .resolver(StandardTags.reset())
+                .resolver(StandardTags.rainbow())
+                .resolver(StandardTags.pride())
+                .resolver(TBD_COLOUR)
+                .build()
+        )
+        .build()
+
     /** Builds a prefix tag. **/
     private fun prefix() : TagResolver {
         return TagResolver.resolver("prefix") { args, _ ->
