@@ -15,4 +15,5 @@ object Sounds {
     val CAMPFIRE_DISALLOW_FISH_COOK = Sound.sound(Key.key("block.fire.extinguish"), Sound.Source.BLOCK, 1f, 0f)
     val ADMIN_MESSAGE = Sound.sound(Key.key("ui.button.click"), Sound.Source.MASTER, 0.5f, 2f)
     val SERVER_ANNOUNCEMENT = Sound.sound(Key.key("block.note_block.pling"), Sound.Source.MASTER, 1f, 1f)
+    val RENAME_ITEM = Sound.sound(Key.key("block.smithing_table.use"), Sound.Source.PLAYER, 1f, 1f)
 }
