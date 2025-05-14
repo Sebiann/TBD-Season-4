@@ -40,9 +40,9 @@ class TrueEyeCommand {
             val trueEyeMeta = trueEye.itemMeta
             position.world = player.world
             trueEyeMeta.displayName(
-                allTags.deserialize("<${ItemRarity.MYTHIC.colourHex}>True Eye of Ender").decoration(TextDecoration.ITALIC, false)
+                allTags.deserialize("<${ItemRarity.EPIC.colourHex}>True Eye of Ender").decoration(TextDecoration.ITALIC, false)
             )
-            val baseLore = mutableListOf(allTags.deserialize("<reset><white>${ItemRarity.MYTHIC.rarityGlyph}${ItemType.CONSUMABLE.typeGlyph}").decoration(TextDecoration.ITALIC, false), allTags.deserialize("<reset><yellow>One of the ancient eyes.").decoration(TextDecoration.ITALIC, false))
+            val baseLore = mutableListOf(allTags.deserialize("<reset><white>${ItemRarity.EPIC.rarityGlyph}${ItemType.CONSUMABLE.typeGlyph}").decoration(TextDecoration.ITALIC, false), allTags.deserialize("<reset><yellow>One of the ancient eyes.").decoration(TextDecoration.ITALIC, false))
             if(lore != null) {
                 baseLore.add(allTags.deserialize(lore))
             }
@@ -68,11 +68,11 @@ class TrueEyeCommand {
                         enderEyeTeam.addEntity(trueEyeEntity)
 
                         trueEyeEntity.location.world.strikeLightningEffect(position)
-                        Fishing.firework(position, flicker = false, trail = false, ItemRarity.MYTHIC.colour, FireworkEffect.Type.BALL_LARGE, false)
+                        Fishing.firework(position, flicker = false, trail = false, ItemRarity.EPIC.colour, FireworkEffect.Type.BALL_LARGE, false)
 
                         Bukkit.getServer().showTitle(
                             Title.title(
-                                allTags.deserialize("<${ItemRarity.MYTHIC.colourHex}><b>TRUE EYE OF ENDER<reset>"),
+                                allTags.deserialize("<${ItemRarity.EPIC.colourHex}><b>TRUE EYE OF ENDER<reset>"),
                                 allTags.deserialize("A true eye of ender has spawned..."),
                                 Title.Times.times(Duration.ofMillis(250L), Duration.ofSeconds(5L), Duration.ofMillis(250L))
                             )
