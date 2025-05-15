@@ -72,11 +72,14 @@ class TrueEyeCommand {
 
                         Bukkit.getServer().showTitle(
                             Title.title(
-                                allTags.deserialize("<${ItemRarity.EPIC.colourHex}><b>TRUE EYE OF ENDER<reset>"),
-                                allTags.deserialize("A true eye of ender has spawned..."),
+                                allTags.deserialize(""),
+                                allTags.deserialize("<#32FF82>A <${ItemRarity.EPIC.colourHex}>True Eye of Ender<#32FF82> has awoken..."),
                                 Title.Times.times(Duration.ofMillis(250L), Duration.ofSeconds(5L), Duration.ofMillis(250L))
                             )
                         )
+                        position.world.spawnParticle(Particle.FIREWORK, position, 300, 0.0, 0.0, 0.0, 1.0, null, true)
+                        position.world.spawnParticle(Particle.END_ROD, position, 300, 0.0, 0.0, 0.0, 1.0, null, true)
+                        Fishing.shinyEffect(trueEyeEntity)
                         Bukkit.getServer().playSound(Sounds.TRUE_EYE_SPAWN)
 
                         cancel()
@@ -87,11 +90,11 @@ class TrueEyeCommand {
                         val x = radius * cos(angle * step)
                         val z = radius * sin(angle * step)
                         val particleLocation = position.clone().add(x, -0.75, z)
-                        position.world.spawnParticle(Particle.WITCH, particleLocation, 1, 0.0, 0.0, 0.0, 0.0)
-                        position.world.spawnParticle(Particle.PORTAL, particleLocation, 1, 0.0, 0.0, 0.0, 0.0)
+                        position.world.spawnParticle(Particle.WITCH, particleLocation, 1, 0.0, 0.0, 0.0, 0.0, null, true)
+                        position.world.spawnParticle(Particle.PORTAL, particleLocation, 1, 0.0, 0.0, 0.0, 0.0, null, true)
                     }
-                    position.world.playSound(position, "entity.enderman.teleport", 3f, pitch)
-                    position.world.playSound(position, "entity.ender_eye.death", 3f, pitch)
+                    position.world.playSound(position, "entity.enderman.teleport", 4f, pitch)
+                    position.world.playSound(position, "entity.ender_eye.death", 4f, pitch)
                     pitch += 0.0625f
                     radius -= 0.2
                 }

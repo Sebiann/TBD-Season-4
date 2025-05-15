@@ -18,7 +18,7 @@ import util.Keys.FISH_RARITY
 @Suppress("unused", "unstableApiUsage")
 @CommandContainer
 class FixFish {
-    @Command("fix-fish")
+    @Command("fixfish")
     @Permission("tbd.command.fixfish")
     fun fixFish(css: CommandSourceStack) {
         val player = css.sender as Player

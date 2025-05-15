@@ -17,7 +17,7 @@ import org.incendo.cloud.annotations.processing.CommandContainer
 @CommandContainer
 class RenameItem {
 
-    @Command("rename-item <name>")
+    @Command("renameitem <name>")
     @CommandDescription("Renames an item at the cost of 1 lapis.")
     @Permission("tbd.command.renameitem")
     fun renameItem(css: CommandSourceStack, name: Array<String>) {
@@ -29,13 +29,13 @@ class RenameItem {
         }
 
         if (!hasLapisInInventory(player)) {
-            player.sendMessage(Formatting.allTags.deserialize("<red>You need 1 lapis in your inventory to rename"))
+            player.sendMessage(Formatting.allTags.deserialize("<red>You need 1 lapis in your inventory to rename."))
             return
         }
         val nameComponent = Formatting.restrictedNoSkullTags.deserialize(name.joinToString(" "))
 
         if (plainText().serialize(nameComponent).length > 50) {
-            player.sendMessage(Formatting.allTags.deserialize("<red>The maximum name length is 50 characters"))
+            player.sendMessage(Formatting.allTags.deserialize("<red>The maximum name length is 50 characters."))
             return
         }
 
@@ -43,7 +43,7 @@ class RenameItem {
         val itemMeta = player.inventory.itemInMainHand.itemMeta
         itemMeta.displayName(nameComponent)
         player.inventory.itemInMainHand.setItemMeta(itemMeta)
-        player.sendMessage(Formatting.allTags.deserialize("<blue>Renamed item!"))
+        player.sendMessage(Formatting.allTags.deserialize("<tbdcolour>Renamed item!"))
         player.playSound(RENAME_ITEM)
     }
 
