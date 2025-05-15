@@ -65,6 +65,7 @@ class TrueEyeCommand {
                         trueEyeEntity.isGlowing = true
                         trueEyeEntity.velocity = Vector().zero()
                         trueEyeEntity.pickupDelay = 10.secondsToTicks()
+                        trueEyeEntity.setWillAge(false)
                         enderEyeTeam.addEntity(trueEyeEntity)
 
                         trueEyeEntity.location.world.strikeLightningEffect(position)
