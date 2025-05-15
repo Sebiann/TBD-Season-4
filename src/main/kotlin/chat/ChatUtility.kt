@@ -4,7 +4,7 @@ import plugin
 import chat.Formatting.allTags
 import chat.Formatting.restrictedTags
 import util.Noxesium
-import lib.Sounds
+import util.Sounds
 
 import io.papermc.paper.chat.ChatRenderer
 

@@ -2,7 +2,7 @@ package command
 
 import chat.Formatting
 import io.papermc.paper.command.brigadier.CommandSourceStack
-import lib.Sounds.RENAME_ITEM
+import util.Sounds.RENAME_ITEM
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText
 
 import org.bukkit.Material.*

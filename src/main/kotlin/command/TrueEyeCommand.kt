@@ -5,7 +5,7 @@ import fishing.Fishing
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import item.ItemRarity
 import item.ItemType
-import lib.Sounds
+import util.Sounds
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.title.Title
@@ -71,13 +71,16 @@ class TrueEyeCommand {
                         trueEyeEntity.location.world.strikeLightningEffect(position)
                         Fishing.firework(position, flicker = false, trail = false, ItemRarity.EPIC.colour, FireworkEffect.Type.BALL_LARGE, false)
 
+                        val eyeSummonMessage = allTags.deserialize("<#32FF82>A <${ItemRarity.EPIC.colourHex}>True Eye of Ender<#32FF82> has awoken...")
+
                         Bukkit.getServer().showTitle(
                             Title.title(
                                 allTags.deserialize(""),
-                                allTags.deserialize("<#32FF82>A <${ItemRarity.EPIC.colourHex}>True Eye of Ender<#32FF82> has awoken..."),
+                                eyeSummonMessage,
                                 Title.Times.times(Duration.ofMillis(250L), Duration.ofSeconds(5L), Duration.ofMillis(250L))
                             )
                         )
+                        Bukkit.getServer().sendMessage(eyeSummonMessage)
                         position.world.spawnParticle(Particle.FIREWORK, position, 300, 0.0, 0.0, 0.0, 1.0, null, true)
                         position.world.spawnParticle(Particle.END_ROD, position, 300, 0.0, 0.0, 0.0, 1.0, null, true)
                         Fishing.shinyEffect(trueEyeEntity)

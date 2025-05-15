@@ -6,7 +6,7 @@ import plugin
 import item.ItemRarity
 import item.ItemType
 import item.SubRarity
-import lib.Sounds
+import util.Sounds
 import logger
 
 import net.kyori.adventure.text.format.TextDecoration
