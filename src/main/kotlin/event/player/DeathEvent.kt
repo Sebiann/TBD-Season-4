@@ -33,7 +33,10 @@ class DeathEvent: Listener {
                 newArgs.add(it)
             }
         }
-
+        if(e.player.killer?.name == "Byrtrum") {
+            e.deathMessage(Formatting.allTags.deserialize(Formatting.DIVINE_DEATH_MESSAGES.random().replace("%s", e.player.name)))
+            return
+        }
         val newComponent = component.arguments(newArgs)
         e.deathMessage(newComponent)
     }

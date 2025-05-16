@@ -82,4 +82,9 @@ object Formatting {
             )
         }
     }
+
+    val DIVINE_DEATH_MESSAGES = listOf(
+        "%s's existence was repurposed",
+        "%s had their existence forfeit"
+    )
 }
