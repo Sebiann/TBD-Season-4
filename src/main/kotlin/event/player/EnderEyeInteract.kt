@@ -1,10 +1,7 @@
 package event.player
 
 import chat.Formatting
-import fishing.Fishing
 import org.bukkit.Location
-import util.Sounds.ENDER_EYE_PLACE_FAIL
-import util.Sounds.ENDER_EYE_PLACE_FAIL_BACKGROUND
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.block.Block
@@ -15,7 +12,8 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.persistence.PersistentDataType
 import util.Keys.END_PORTAL_FRAMES_WITH_EYE
 import util.Keys.TRUE_EYE
-import util.Sounds.CAMPFIRE_DISALLOW_FISH_COOK
+import util.Sounds.ENDER_EYE_PLACE_FAIL
+import util.Sounds.ENDER_EYE_PLACE_FAIL_BACKGROUND
 import util.Sounds.FRAME_EYE_BREAK
 import util.pdc.LocationArrayDataType
 import util.secondsToTicks

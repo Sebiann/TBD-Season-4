@@ -6,6 +6,9 @@ import plugin
 object Keys {
     val FISH_RARITY = NamespacedKey(plugin, "fish.rarity")
     val FISH_IS_SHINY = NamespacedKey(plugin, "fish.is_shiny")
+    val FISH_IS_SHADOW = NamespacedKey(plugin, "fish.is_shadow")
+    val FISH_IS_OBFUSCATED = NamespacedKey(plugin, "fish.is_obfuscated")
+
     val TRUE_EYE = NamespacedKey(plugin, "eye_of_ender.true_eye")
     val END_PORTAL_FRAMES_WITH_EYE = NamespacedKey(plugin, "end_portal_frames.with_true_eye")
 
