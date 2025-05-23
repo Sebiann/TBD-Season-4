@@ -12,11 +12,11 @@ import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
+import util.sha1
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
-import java.security.MessageDigest
 
 class PlayerJoin : Listener {
     private val mm = MiniMessage.miniMessage()
@@ -86,9 +86,4 @@ class PlayerJoin : Listener {
         return sha1(response.body())
     }
 
-    private fun sha1(data: ByteArray): String {
-        val digest = MessageDigest.getInstance("SHA-1")
-        val hashedBytes = digest.digest(data)
-        return hashedBytes.joinToString("") { "%02x".format(it) }
-    }
 }

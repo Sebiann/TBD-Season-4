@@ -12,6 +12,7 @@ import org.incendo.cloud.annotations.Command
 import org.incendo.cloud.annotations.CommandDescription
 import org.incendo.cloud.annotations.Permission
 import org.incendo.cloud.annotations.processing.CommandContainer
+import util.isHoldingItemInMainHand
 
 @Suppress("unused", "unstableApiUsage")
 @CommandContainer
@@ -21,9 +22,9 @@ class RenameItem {
     @CommandDescription("Renames an item at the cost of 1 lapis.")
     @Permission("tbd.command.renameitem")
     fun renameItem(css: CommandSourceStack, name: Array<String>) {
-        val player = css.sender as? Player ?: run { return }
+        val player = css.sender as? Player ?: return
 
-        if (!isHoldingItem(player)) {
+        if (!player.isHoldingItemInMainHand()) {
             player.sendMessage(Formatting.allTags.deserialize("<red>You need to be holding an item to rename."))
             return
         }
@@ -45,10 +46,6 @@ class RenameItem {
         player.inventory.itemInMainHand.setItemMeta(itemMeta)
         player.sendMessage(Formatting.allTags.deserialize("<tbdcolour>Renamed item!"))
         player.playSound(RENAME_ITEM)
-    }
-
-    fun isHoldingItem(player: Player): Boolean {
-        return player.inventory.itemInMainHand.type != AIR
     }
 
     fun hasLapisInInventory(player: Player): Boolean {
