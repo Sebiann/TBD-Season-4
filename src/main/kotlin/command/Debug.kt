@@ -2,13 +2,11 @@ package command
 
 import fishing.FishRarity
 import fishing.Fishing
-
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import item.SubRarity
-
+import logger
 import net.kyori.adventure.text.Component
 import org.bukkit.GameMode
-
 import org.bukkit.Material
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player
@@ -39,6 +37,28 @@ class Debug {
                     }
                 }.runTaskLater(plugin, 100L)
             }
+        }
+    }
+
+    @Command("debug simulate <count>")
+    @Permission("tbd.command.debug")
+    fun debugSimulateCatches(css: CommandSourceStack, @Argument("count") count: Int) {
+        val catches = mutableListOf<FishRarity>()
+        for (i in 0..count) {
+            catches.add(FishRarity.getRandomRarity())
+        }
+        logger.info("RARITY SIMULATION RESULTS:")
+        for(rarity in FishRarity.entries) {
+            logger.info("${rarity.name}: ${catches.filter { r -> r == rarity }.size}")
+        }
+
+        val catchesSR = mutableListOf<SubRarity>()
+        for (i in 0..count) {
+            catchesSR.add(SubRarity.getRandomSubRarity())
+        }
+        logger.info("SUB RARITY SIMULATION RESULTS:")
+        for(rarity in SubRarity.entries) {
+            logger.info("${rarity.name}: ${catchesSR.filter { r -> r == rarity }.size}")
         }
     }
 }

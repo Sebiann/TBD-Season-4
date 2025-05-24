@@ -27,7 +27,7 @@ data class RarityProperties(
  * @param props Special display properties of the rarity
  */
 enum class FishRarity(val weight: Double, val itemRarity: ItemRarity, val props: RarityProperties) {
-    COMMON(47.75, ItemRarity.COMMON, RarityProperties()),
+    COMMON(47.7125, ItemRarity.COMMON, RarityProperties()),
     UNCOMMON(34.0, ItemRarity.UNCOMMON, RarityProperties()),
     RARE(12.0, ItemRarity.RARE, RarityProperties(isAnimated = true)),
     EPIC(5.0, ItemRarity.EPIC, RarityProperties(isAnimated = true, sendGlobalMsg = true)),
@@ -53,14 +53,14 @@ enum class FishRarity(val weight: Double, val itemRarity: ItemRarity, val props:
         sendGlobalTitle = true,
         showCatcher = true,
         retainData = true)),
-    TRANSCENDENT(0.0002, ItemRarity.TRANSCENDENT, RarityProperties(
+    TRANSCENDENT(0.025, ItemRarity.TRANSCENDENT, RarityProperties(
         isAnimated = true,
         sendGlobalMsg = true,
         sendGlobalTitle = true,
         showCatcher = true,
         retainData = true
     )),
-    CELESTIAL(0.0001, ItemRarity.CELESTIAL, RarityProperties(
+    CELESTIAL(0.0125, ItemRarity.CELESTIAL, RarityProperties(
         isAnimated = true,
         sendGlobalMsg = true,
         sendGlobalTitle = true,

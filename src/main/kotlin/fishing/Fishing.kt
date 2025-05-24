@@ -44,7 +44,7 @@ object Fishing {
         val subRarity = forcedFishSubRarity ?: SubRarity.getRandomSubRarity()
 
         val caughtByLore =
-            if (fishRarity.props.showCatcher || subRarity != SubRarity.NULL) allTags.deserialize("<reset>${if (subRarity == SubRarity.SHADOW) "<#0><shadow:white>" else "<white>"}${if (subRarity == SubRarity.OBFUSCATED) "<font:alt>" else ""}Caught by ${if (subRarity == SubRarity.SHADOW) "<#0><shadow:yellow>" else "<yellow>"}${player.name}${if (subRarity == SubRarity.SHADOW) "<#0><shadow:white>" else "<white>"}${if (subRarity == SubRarity.OBFUSCATED) "</font:alt>" else ""}.").decoration(TextDecoration.ITALIC, false) else null
+            if (fishRarity.props.showCatcher || subRarity != SubRarity.NONE) allTags.deserialize("<reset>${if (subRarity == SubRarity.SHADOW) "<#0><shadow:white>" else "<white>"}${if (subRarity == SubRarity.OBFUSCATED) "<font:alt>" else ""}Caught by ${if (subRarity == SubRarity.SHADOW) "<#0><shadow:yellow>" else "<yellow>"}${player.name}${if (subRarity == SubRarity.SHADOW) "<#0><shadow:white>" else "<white>"}${if (subRarity == SubRarity.OBFUSCATED) "</font:alt>" else ""}.").decoration(TextDecoration.ITALIC, false) else null
         val fishMeta = item.itemStack.itemMeta
         fishMeta.displayName(
             allTags.deserialize("${if (subRarity == SubRarity.SHADOW) "<#0><shadow:${fishRarity.itemRarity.colourHex}>" else "<${fishRarity.itemRarity.colourHex}>"}${if(subRarity == SubRarity.OBFUSCATED) "<font:alt>" else ""}${item.name}").decoration(TextDecoration.ITALIC, false)
@@ -57,13 +57,13 @@ object Fishing {
                 )
             } else {
                 listOf(
-                    allTags.deserialize("<reset><white>${fishRarity.itemRarity.rarityGlyph}${if (subRarity != SubRarity.NULL) "<reset><white>${subRarity.subRarityGlyph}${ItemType.FISH.typeGlyph}" else "<reset><white>${ItemType.FISH.typeGlyph}"}")
+                    allTags.deserialize("<reset><white>${fishRarity.itemRarity.rarityGlyph}${if (subRarity != SubRarity.NONE) "<reset><white>${subRarity.subRarityGlyph}${ItemType.FISH.typeGlyph}" else "<reset><white>${ItemType.FISH.typeGlyph}"}")
                         .decoration(TextDecoration.ITALIC, false), caughtByLore
                 )
             }
         )
         when(subRarity) {
-            SubRarity.NULL -> {}
+            SubRarity.NONE -> {}
             SubRarity.SHINY -> {
                 fishMeta.setEnchantmentGlintOverride(true)
                 fishMeta.persistentDataContainer.set(FISH_IS_SHINY, PersistentDataType.BOOLEAN, true)
@@ -90,7 +90,7 @@ object Fishing {
         if (fishRarity.props.sendGlobalTitle) catchTitle(player, item, fishRarity)
         if (fishRarity.props.isAnimated) catchAnimation(player, item, location.add(0.0, 1.75, 0.0), fishRarity)
         if (fishRarity in listOf(FishRarity.LEGENDARY, FishRarity.MYTHIC, FishRarity.UNREAL, FishRarity.TRANSCENDENT, FishRarity.CELESTIAL)) logger.info("(FISHING) ${player.name} caught $fishRarity ${item.name}.")
-        if (subRarity != SubRarity.NULL) logger.info("(FISHING) ${player.name} caught $subRarity ${item.name}.")
+        if (subRarity != SubRarity.NONE) logger.info("(FISHING) ${player.name} caught $subRarity ${item.name}.")
     }
 
     private fun catchText(catcher: Player, item: Item, fishRarity: FishRarity) {
