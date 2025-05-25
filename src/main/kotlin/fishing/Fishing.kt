@@ -122,7 +122,7 @@ object Fishing {
                     Locale.getDefault()
                 ) else it.toString()
             }
-        }<reset>."
+        }<reset>"
     )
 
     private fun catchAnimation(catcher: Player, item: Item, location: Location, fishRarity: FishRarity) {

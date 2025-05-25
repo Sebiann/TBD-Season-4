@@ -47,6 +47,7 @@ class SeasonFourPlugin : JavaPlugin() {
         server.pluginManager.registerEvents(DeathEvent(), this)
         server.pluginManager.registerEvents(DamageEvent(), this)
         server.pluginManager.registerEvents(EnderEyeInteract(), this)
+        server.pluginManager.registerEvents(PlayerItemConsume(), this)
     }
 
     private fun registerCommands() {
