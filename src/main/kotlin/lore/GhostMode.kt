@@ -42,6 +42,7 @@ object GhostMode {
                         }
                     }
                 } else {
+                    toggleGhostMode(player)
                     cancel()
                 }
 
