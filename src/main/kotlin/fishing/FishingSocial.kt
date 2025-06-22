@@ -30,7 +30,7 @@ object FishingSocial {
                         }
                     }
 
-                    if(ticks == 0 && seconds == -10 && minutes == 0) {
+                    if(ticks == 0 && seconds == -15 && minutes == 0) {
                         ChatUtility.messageAudience(Audience.audience(Bukkit.getOnlinePlayers()), "<gradient:dark_aqua:aqua:dark_aqua><b>FISHING SOCIAL<reset>: A Fishing Social is starting in <yellow>15s<white>!<newline>• Score points by catching fish.<newline>• <b><green>EVERY</b> catch is worth points, rarer fish net more points.<newline>• The person with the most points when the timer ends, <gradient:gold:yellow:gold>wins<white>!<newline>• <gradient:gold:yellow:gold><b>GOOD LUCK!", false)
                         Bukkit.getServer().playSound(FISHING_SOCIAL)
                     }
