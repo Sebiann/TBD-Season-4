@@ -24,7 +24,7 @@ object FishingSocial {
                 var seconds = -15
                 var minutes = 0
                 override fun run() {
-                    if(seconds >= 0) {
+                    if(seconds >= 1) {
                         for(player in Bukkit.getOnlinePlayers()) {
                             player.sendActionBar(Formatting.allTags.deserialize("<gradient:dark_aqua:aqua:dark_aqua><b>FISHING SOCIAL<reset><gray> - <reset>Time Elapsed: ${minutes}m ${seconds}s<gray> - <reset>Event Length: ${endTime.timeRemainingFormatted()}"))
                         }
