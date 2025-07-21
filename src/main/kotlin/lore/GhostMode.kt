@@ -1,5 +1,6 @@
 package lore
 
+import chat.Formatting
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.persistence.PersistentDataType
@@ -15,10 +16,11 @@ object GhostMode {
     fun toggleGhostMode(player: Player) {
         if(player in ghostPlayers) {
             ghostPlayers.remove(player)
-            player.isInvisible = false
+            player.sendMessage(Formatting.allTags.deserialize("<dark_gray><i>You are now visible"))
         } else {
             ghostPlayers.add(player)
             ghostModeTask(player)
+            player.sendMessage(Formatting.allTags.deserialize("<dark_gray><i>You are now intangible"))
         }
     }
 

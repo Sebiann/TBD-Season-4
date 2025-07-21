@@ -92,7 +92,7 @@ class Message {
         val message = Formatting.allTags.stripTags(text.joinToString(" "))
 
         if(sender.name == "Byrtrum") {
-            sender.sendMessage(Formatting.allTags.deserialize("<i><tbdcolour>You</tbdcolour> -> <yellow><obf>${recipient.name}</obf></yellow>: $message</i>"))
+            sender.sendMessage(Formatting.allTags.deserialize("<i><tbdcolour>You</tbdcolour> -> <yellow>${recipient.name}</yellow>: $message</i>"))
             recipient.sendMessage(Formatting.allTags.deserialize("<i><yellow><obf>${sender.name}</obf></yellow> -> <tbdcolour>You</tbdcolour>: $message</i>"))
         } else {
             sender.sendMessage(Formatting.allTags.deserialize("<i><tbdcolour>You</tbdcolour> -> <yellow>${recipient.name}</yellow>: $message</i>"))
