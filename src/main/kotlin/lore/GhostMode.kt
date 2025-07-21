@@ -27,7 +27,11 @@ object GhostMode {
     private fun ghostModeTask(player: Player) {
         object : BukkitRunnable() {
             override fun run() {
-                if(ghostPlayers.contains(player) && player.isOnline) {
+                if(!player.isOnline) {
+                    toggleGhostMode(player)
+                    cancel()
+                }
+                if(ghostPlayers.contains(player)) {
                     for (viewer in Bukkit.getOnlinePlayers()) {
                         if (viewer != player) {
                             if(player.world == viewer.world) {
@@ -49,11 +53,7 @@ object GhostMode {
 
                         }
                     }
-                } else {
-                    toggleGhostMode(player)
-                    cancel()
                 }
-
             }
         }.runTaskTimer(plugin, 0L, 2L)
     }
