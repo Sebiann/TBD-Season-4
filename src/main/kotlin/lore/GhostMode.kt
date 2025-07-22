@@ -53,6 +53,15 @@ object GhostMode {
 
                         }
                     }
+                } else {
+                    for (viewer in Bukkit.getOnlinePlayers()) {
+                        if (viewer != player) {
+                            if(player.world == viewer.world) {
+                                viewer.showPlayer(plugin, player)
+                            }
+                        }
+                    }
+                    cancel()
                 }
             }
         }.runTaskTimer(plugin, 0L, 2L)
