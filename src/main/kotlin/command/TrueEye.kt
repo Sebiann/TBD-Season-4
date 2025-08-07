@@ -86,6 +86,8 @@ class TrueEye {
                         Fishing.shinyEffect(trueEyeEntity)
                         Bukkit.getServer().playSound(Sounds.TRUE_EYE_SPAWN)
 
+                        Memory.saveMemory(trueEye)
+
                         cancel()
                         return
                     }

@@ -1,36 +1,31 @@
 package fishing
 
 import chat.Formatting.allTags
-import util.Keys.FISH_RARITY
-import plugin
 import item.ItemRarity
 import item.ItemType
 import item.SubRarity
-import util.Sounds
 import logger
-
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.title.Title
-
 import org.bukkit.*
 import org.bukkit.entity.*
+import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
+import plugin
 import util.Keys.FISH_IS_OBFUSCATED
 import util.Keys.FISH_IS_SHADOW
 import util.Keys.FISH_IS_SHINY
+import util.Keys.FISH_RARITY
+import util.Sounds
 import util.startsWithVowel
-
 import java.time.Duration
-
-import kotlin.collections.ArrayList
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.random.Random
-import net.kyori.adventure.text.Component
-import org.bukkit.inventory.ItemStack
 
 object Fishing {
     fun catchFish(

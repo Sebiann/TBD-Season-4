@@ -50,6 +50,10 @@ repositories {
         name = "papermc"
         url = uri("https://repo.papermc.io/repository/maven-public/")
     }
+    maven {
+        name = "noxcrewMavenPublic"
+        url = uri("https://maven.noxcrew.com/public")
+    }
 }
 
 dependencies {
@@ -63,6 +67,8 @@ dependencies {
 
     implementation("org.spongepowered:configurate-yaml:4.2.0")
     implementation("org.spongepowered:configurate-extra-kotlin:4.2.0")
+
+    implementation("com.noxcrew.interfaces:interfaces:2.0.1-SNAPSHOT")
 }
 
 tasks {

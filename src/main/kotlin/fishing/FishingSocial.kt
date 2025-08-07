@@ -143,5 +143,6 @@ object FishingSocial {
         itemMeta.setEnchantmentGlintOverride(true)
         itemStack.setItemMeta(itemMeta)
         player.inventory.addItem(itemStack)
+        Memory.saveMemory(itemStack)
     }
 }

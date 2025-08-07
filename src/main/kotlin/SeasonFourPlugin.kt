@@ -1,5 +1,8 @@
 import chat.VisualChat
-import event.*
+import com.noxcrew.interfaces.InterfacesListeners
+import event.DamageEvent
+import event.FurnaceSmelt
+import event.ServerLinks
 import event.player.*
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import lore.Divinity
@@ -28,6 +31,7 @@ class SeasonFourPlugin : JavaPlugin() {
         registerCommands()
         registerMessengers()
         VisualChat.clearChatEntities()
+        InterfacesListeners.install(plugin)
     }
 
     override fun onDisable() {
@@ -86,6 +90,8 @@ class SeasonFourPlugin : JavaPlugin() {
         val node = loader.load()
         config = node.get(Config::class)!!
         logger.info("Loaded configuration.")
+
+        Memory.loadMemories()
     }
 
     private fun registerMessengers() {

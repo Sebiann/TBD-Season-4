@@ -19,7 +19,6 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 
-
 class PlayerJoin : Listener {
     private val mm = MiniMessage.miniMessage()
     val resourcePacks = mutableListOf<ResourcePackInfo>()
@@ -39,7 +38,7 @@ class PlayerJoin : Listener {
 
         e.player.sendResourcePacks(resourcePackRequest)
         e.player.sendMessage(mm.deserialize("<red>⚠ <reset>Please <b>do not</b> break loot chests!"))
-        if(e.player.name == "Byrtrum") {
+        if(e.player.name in listOf("Byrtrum", "fish_25")) {
             e.joinMessage(null)
             GhostMode.toggleGhostMode(e.player)
         } else {
