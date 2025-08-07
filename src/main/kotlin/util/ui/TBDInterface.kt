@@ -33,7 +33,7 @@ class TBDInterface(player: Player, interfaceType: TBDInterfaceType) {
     }
 
     private fun createMemoryInterface(player: Player, interfaceType: TBDInterfaceType) = buildChestInterface {
-        val memories = Memory.getMemories()
+        val memories = Memory.getMemories().sortedBy { it.type.name }
         titleSupplier = { Formatting.allTags.deserialize("<!i><b><tbdcolour><shadow:#0>${interfaceType.interfaceName}") }
         rows = 6
         /** Apply pagination transform **/
