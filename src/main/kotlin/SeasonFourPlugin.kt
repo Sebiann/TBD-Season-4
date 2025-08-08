@@ -92,8 +92,6 @@ class SeasonFourPlugin : JavaPlugin() {
         val node = loader.load()
         config = node.get(Config::class)!!
         logger.info("Loaded configuration.")
-
-        Memory.loadMemories()
     }
 
     private fun registerMessengers() {
