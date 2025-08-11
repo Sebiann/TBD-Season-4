@@ -1,4 +1,4 @@
-package event
+package event.block
 
 import command.RenameItem
 import org.bukkit.event.EventHandler

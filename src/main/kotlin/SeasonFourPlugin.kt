@@ -1,10 +1,10 @@
 import chat.VisualChat
 import com.noxcrew.interfaces.InterfacesListeners
-import event.BlockPlace
-import event.DamageEvent
+import event.block.BlockPlace
+import event.entity.DamageEvent
 import event.block.FurnaceSmelt
-import event.PrepareAnvilListener
-import event.ServerLinks
+import event.block.PrepareAnvilListener
+import event.util.ServerLinks
 import event.block.PortalFrameInteract
 import event.entity.DragonDeathEvent
 import event.entity.EnderEyeInteract

@@ -1,4 +1,4 @@
-package event
+package event.block
 
 import chat.Formatting.allTags
 import org.bukkit.event.EventHandler

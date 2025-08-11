@@ -1,4 +1,4 @@
-package event
+package event.util
 
 import Config
 import chat.Formatting.allTags
