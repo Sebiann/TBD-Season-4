@@ -5,6 +5,8 @@ import fishing.FishRarity
 import fishing.Fishing
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import item.SubRarity
+import item.treasurebag.BagType
+import item.treasurebag.TreasureBag
 import logger
 import net.kyori.adventure.text.Component
 import org.bukkit.GameMode
@@ -64,6 +66,15 @@ class Debug {
         logger.info("SUB RARITY SIMULATION RESULTS:")
         for(rarity in SubRarity.entries) {
             logger.info("${rarity.name}: ${catchesSR.filter { r -> r == rarity }.size}")
+        }
+    }
+
+    @Command("debug treasure_bag <type>")
+    @Permission("tbd.command.debug")
+    fun debugTreasureBag(css: CommandSourceStack, @Argument("type") type: BagType) {
+        if(css.sender is Player) {
+            val player = css.sender as Player
+            player.inventory.addItem(TreasureBag.create(type))
         }
     }
 

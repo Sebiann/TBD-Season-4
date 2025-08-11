@@ -2,9 +2,12 @@ import chat.VisualChat
 import com.noxcrew.interfaces.InterfacesListeners
 import event.BlockPlace
 import event.DamageEvent
-import event.FurnaceSmelt
+import event.block.FurnaceSmelt
 import event.PrepareAnvilListener
 import event.ServerLinks
+import event.block.PortalFrameInteract
+import event.entity.DragonDeathEvent
+import event.entity.EnderEyeInteract
 import event.player.*
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import lore.Divinity
@@ -57,6 +60,8 @@ class SeasonFourPlugin : JavaPlugin() {
         server.pluginManager.registerEvents(EnderEyeInteract(), this)
         server.pluginManager.registerEvents(PlayerItemConsume(), this)
         server.pluginManager.registerEvents(PlayerMovement(), this)
+        server.pluginManager.registerEvents(PortalFrameInteract(), this)
+        server.pluginManager.registerEvents(DragonDeathEvent(), this)
         server.pluginManager.registerEvents(PrepareAnvilListener(), this)
         server.pluginManager.registerEvents(BlockPlace(), this)
     }

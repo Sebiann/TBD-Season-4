@@ -10,6 +10,9 @@ object Keys {
     val CURRENCY_HASH = NamespacedKey(plugin, "currency.sha256")
     val ITEM_IS_UNPLACEABLE = NamespacedKey(plugin, "item.unplaceable")
     val MEMENTO_TYPE = NamespacedKey(plugin, "item.memento_type")
+    val GENERIC_RARITY = NamespacedKey(plugin, "item.rarity")
+    val GENERIC_SUB_RARITY = NamespacedKey(plugin, "item.rarity.sub_rarity")
+    val PLAYER_PLACED_END_PORTAL_FRAMES = NamespacedKey(plugin, "end_portal_frames.placed_by_player")
 
     /**
      * Lore
