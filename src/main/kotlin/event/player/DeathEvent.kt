@@ -10,7 +10,6 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.persistence.PersistentDataType
-import org.bukkit.potion.PotionEffectType
 import util.Keys.DIVINITY_CHAINS
 import kotlin.random.Random
 
@@ -51,11 +50,7 @@ class DeathEvent: Listener {
             }
         }
         if(e.player.killer?.name == "Byrtrum" || e.player.killer?.name == "fish_25") {
-            if(e.player.killer?.hasPotionEffect(PotionEffectType.INVISIBILITY) == true) {
-                e.deathMessage(Formatting.allTags.deserialize(Formatting.DIVINATED_DEATH_MESSAGES.random().replace("%s", e.player.name)))
-            } else {
-                e.deathMessage(Formatting.allTags.deserialize(Formatting.DIVINE_DEATH_MESSAGES.random().replace("%s", e.player.name)))
-            }
+            e.deathMessage(Formatting.allTags.deserialize(Formatting.DIVINE_DEATH_MESSAGES.random().replace("%s", e.player.name)))
             return
         }
         val newComponent = component.arguments(newArgs)
