@@ -5,7 +5,7 @@ import plugin
 
 object Keys {
     /**
-     * Genral / Utility
+     * General / Utility
      */
     val CURRENCY_HASH = NamespacedKey(plugin, "currency.sha256")
     val ITEM_IS_UNPLACEABLE = NamespacedKey(plugin, "item.unplaceable")
@@ -13,6 +13,7 @@ object Keys {
     val GENERIC_RARITY = NamespacedKey(plugin, "item.rarity")
     val GENERIC_SUB_RARITY = NamespacedKey(plugin, "item.rarity.sub_rarity")
     val PLAYER_PLACED_END_PORTAL_FRAMES = NamespacedKey(plugin, "end_portal_frames.placed_by_player")
+    val TBD_PLUS_ITEM = NamespacedKey(plugin, "item.tbd_plus")
     val NOXESIUM_IMMOVABLE = NamespacedKey("noxesium", "immovable")
 
     /**

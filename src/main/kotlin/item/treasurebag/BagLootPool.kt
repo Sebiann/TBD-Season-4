@@ -11,6 +11,7 @@ enum class BagLootPool(val possibleItems: List<BagItem>) {
         DRAGON_ELYTRA,
         DRAGON_EYE,
         DRAGON_HEAD,
-        DRAGON_PORTAL_FRAME
+        DRAGON_PORTAL_FRAME,
+        GENERIC_TBD_PLUS_TOKEN
     ))
 }

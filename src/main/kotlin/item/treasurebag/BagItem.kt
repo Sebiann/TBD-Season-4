@@ -17,6 +17,7 @@ import org.bukkit.NamespacedKey
 import org.bukkit.inventory.*
 import util.Keys.GENERIC_RARITY
 import util.Keys.GENERIC_SUB_RARITY
+import util.Keys.TBD_PLUS_ITEM
 import util.Keys.TRUE_EYE
 
 /**
@@ -26,6 +27,21 @@ import util.Keys.TRUE_EYE
  */
 @Suppress("unstableApiUsage")
 enum class BagItem(val pctChanceToRoll: Int, val amountRange: IntRange, val itemStack: ItemStack) {
+    /** Generic items that can be obtained from any or multiple sources **/
+    GENERIC_TBD_PLUS_TOKEN(2, 1..1,
+        ItemStack(Material.PINK_DYE).apply {
+            val tokenMeta = this.itemMeta
+            tokenMeta.displayName(allTags.deserialize("<!i><${UNREAL.colourHex}>TBD+ Token"))
+            tokenMeta.lore(listOf(
+                allTags.deserialize("<!i><white>${UNREAL.rarityGlyph}${ItemType.CONSUMABLE.typeGlyph}"),
+                allTags.deserialize("<!i><yellow>A token emanating with mysterious energy.")
+            ))
+            tokenMeta.persistentDataContainer.set(GENERIC_RARITY, STRING, UNREAL.rarityName.uppercase())
+            tokenMeta.persistentDataContainer.set(TBD_PLUS_ITEM, BOOLEAN, true)
+            this.itemMeta = tokenMeta
+        }
+    ),
+    /** Items related to the Ender Dragon **/
     DRAGON_EGG(25, 1..1,
         ItemStack(Material.DRAGON_EGG)
     ),
@@ -86,7 +102,7 @@ enum class BagItem(val pctChanceToRoll: Int, val amountRange: IntRange, val item
             frameMeta.displayName(allTags.deserialize("<!i><${MYTHIC.colourHex}>End Portal Frame"))
             frameMeta.lore(listOf(
                 allTags.deserialize("<!i><white>${MYTHIC.rarityGlyph}${ItemType.CONSUMABLE.typeGlyph}"),
-                allTags.deserialize("<!i><yellow>A very rare drop from an Ender Dragon."),
+                allTags.deserialize("<!i><yellow>A very rare drop from an Ender Dragon.")
             ))
             frameMeta.persistentDataContainer.set(GENERIC_RARITY, STRING, MYTHIC.rarityName.uppercase())
             this.itemMeta = frameMeta
