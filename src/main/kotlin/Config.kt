@@ -8,7 +8,8 @@ import java.net.URI
 @ConfigSerializable
 data class Config(
     val links: List<Link>,
-    val resourcePacks: List<ResourcePack>
+    val resourcePacks: List<ResourcePack>,
+    val textureOptions: List<TextureOptions>
 )
 
 @ConfigSerializable
@@ -17,6 +18,8 @@ data class Link(val component: String, val uri: URI, val order: Int)
 @ConfigSerializable
 data class ResourcePack(val uri: URI, val hash: String, val priority: Int)
 
+@ConfigSerializable
+data class TextureOptions(val one: String)
 
 /** TODO: Memory config overhaul
  * Not part of the configurate model, will cause problems if events that receive the config per parameter from main

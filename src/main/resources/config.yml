@@ -20,3 +20,9 @@ resource-packs:
   - uri: "https://github.com/TBDSMP/resourcepack-s4/releases/latest/download/TBD-RP-S4.zip"
     hash: ""
     priority: 99
+
+# List of possible texture options for helmets.
+texture-options:
+  - "test1"
+  - "test2"
+  - "test3"
