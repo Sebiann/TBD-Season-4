@@ -13,7 +13,7 @@ import util.ui.TBDInterfaceType
 class Island {
     @Command("exchange")
     @Permission("tbd.command.exchange")
-    fun debugTreasureBag(css: CommandSourceStack) {
+    fun islandExchange(css: CommandSourceStack) {
         if(css.sender is Player) {
             TBDInterface(css.sender as Player, TBDInterfaceType.ISLAND_EXCHANGE)
         }
