@@ -24,6 +24,7 @@ import org.incendo.cloud.annotations.processing.CommandContainer
 import plugin
 import util.Keys
 import util.isHoldingItemInMainHand
+import java.io.File
 
 @Suppress("unused", "unstableApiUsage")
 @CommandContainer
@@ -101,5 +102,30 @@ class Debug {
             it.set(Keys.MEMENTO_TYPE, PersistentDataType.STRING, value)
         }
         player.sendMessage(Formatting.allTags.deserialize("<green>Memento data migrated successfully!</green>"))
+    }
+
+    @Command("debug scavengerhunt create")
+    @Permission("tbd.command.debug.seb")
+    fun createScavengerHunt(css: CommandSourceStack) {
+        val file = File("plugins/tbdseason4/scavengerhunt.flag")
+
+        if (file.exists().not()) {
+            file.createNewFile()
+            css.sender.sendMessage(Formatting.allTags.deserialize("<green>Scavenger hunt file created.</green>"))
+        } else {
+            css.sender.sendMessage(Formatting.allTags.deserialize("<red>Scavenger hunt file already exists.</red>"))
+        }
+    }
+
+    @Command("debug scavengerhunt check")
+    @Permission("tbd.command.debug.seb")
+    fun checkScavengerHunt(css: CommandSourceStack) {
+        val file = File("plugins/tbdseason4/scavengerhunt.flag")
+
+        if (file.exists().not()) {
+            css.sender.sendMessage(Formatting.allTags.deserialize("<green>Scavenger hunt file doesn't exist.</green>"))
+        } else {
+            css.sender.sendMessage(Formatting.allTags.deserialize("<red>Scavenger hunt file already exists.</red>"))
+        }
     }
 }
