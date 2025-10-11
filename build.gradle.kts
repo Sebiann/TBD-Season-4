@@ -68,6 +68,7 @@ dependencies {
 
     implementation("org.spongepowered:configurate-yaml:4.2.0")
     implementation("org.spongepowered:configurate-extra-kotlin:4.2.0")
+    implementation("fr.mrmicky:fastboard:2.1.5")
 
     implementation("com.noxcrew.interfaces:interfaces:2.0.1-SNAPSHOT")
 
@@ -95,6 +96,7 @@ tasks {
 
         relocate("org.incendo", "${shadowPkg}.org.incendo")
         relocate("org.spongepowered", "${shadowPkg}.org.spongepowered")
+        relocate("fr.mrmicky", "${shadowPkg}.fr.mrmicky")
 
         mergeServiceFiles()
     }
