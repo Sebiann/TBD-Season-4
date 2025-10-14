@@ -2,7 +2,6 @@ package util.ui
 
 import Memory
 import chat.Formatting
-import com.noxcrew.interfaces.drawable.Drawable
 import com.noxcrew.interfaces.drawable.Drawable.Companion.drawable
 import com.noxcrew.interfaces.element.Element
 import com.noxcrew.interfaces.element.StaticElement
@@ -14,6 +13,7 @@ import com.noxcrew.interfaces.transform.builtin.PaginationButton
 import com.noxcrew.interfaces.transform.builtin.PaginationTransformation
 import item.ItemRarity
 import kotlinx.coroutines.runBlocking
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
@@ -21,29 +21,52 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import util.Keys.NOXESIUM_IMMOVABLE
-import util.Sounds.INTERFACE_INTERACT
+import util.Sounds
 import util.api.IslandAPI
 import util.api.IslandAssetType
 import util.api.Listings
+import java.text.NumberFormat
 import java.time.Instant
 
 class TBDInterface(player: Player, interfaceType: TBDInterfaceType) {
     init {
-        when(interfaceType) {
+        when (interfaceType) {
             TBDInterfaceType.MEMORY_ARCHIVE -> {
                 runBlocking {
-                    createMemoryInterface(player, interfaceType, MemoryFilter.SEASON_FOUR)
+                    TBDInterfaces.createMemoryInterface(
+                        player,
+                        interfaceType,
+                        MemoryFilter.SEASON_FOUR
+                    )
                 }
             }
             TBDInterfaceType.ISLAND_EXCHANGE -> {
                 runBlocking {
-                    createExchangeInterface(player, currentListings = null, interfaceType, IslandExchangeMainFilter.RECENTLY_LISTED, IslandExchangeRarityFilter.ALL, IslandExchangeTypeFilter.ALL)
+                    TBDInterfaces.createExchangeInterface(
+                        player,
+                        currentListings = null,
+                        interfaceType,
+                        IslandExchangeMainFilter.RECENTLY_LISTED,
+                        IslandExchangeRarityFilter.ALL,
+                        IslandExchangeTypeFilter.ALL
+                    )
+                }
+            }
+            TBDInterfaceType.ISLAND_EXCHANGE_HISTORY -> {
+                runBlocking {
+                    TBDInterfaces.createPreviousSalesExchangeInterface(
+                        player,
+                        emptyList(),
+                        interfaceType
+                    )
                 }
             }
         }
     }
+}
 
-    private suspend fun createExchangeInterface(player: Player, currentListings: List<Listings>?, interfaceType: TBDInterfaceType, mainFilter: IslandExchangeMainFilter, rarityFilter: IslandExchangeRarityFilter, typeFilter: IslandExchangeTypeFilter) = buildChestInterface {
+object TBDInterfaces {
+    suspend fun createExchangeInterface(player: Player, currentListings: List<Listings>?, interfaceType: TBDInterfaceType, mainFilter: IslandExchangeMainFilter, rarityFilter: IslandExchangeRarityFilter, typeFilter: IslandExchangeTypeFilter) = buildChestInterface {
         // Listings are only queried when the interface is initially opened, sorting and filter controls do not refresh this interface
         val baseListings = currentListings ?: IslandAPI.getListings()
         var listings = baseListings
@@ -71,9 +94,10 @@ class TBDInterface(player: Player, interfaceType: TBDInterfaceType) {
         val items = mutableListOf<ItemStack>()
         for(listing in listings) items.add(listing.item)
 
-        titleSupplier = { Formatting.allTags.deserialize("<!i><b><tbdcolour><shadow:#0>${interfaceType.interfaceName}") }
+        titleSupplier = { Formatting.allTags.deserialize("<!i><b><tbdcolour><shadow:#0:0.75>${interfaceType.interfaceName}") }
         rows = 6
-        addTransform(PaginatedMenu(items))
+
+        addTransform(PaginatedIslandExchangeMenu(items))
         /** Add overview item **/
         withTransform { pane, _ ->
             val infoMenuItem = ItemStack(Material.NETHER_STAR)
@@ -85,7 +109,7 @@ class TBDInterface(player: Player, interfaceType: TBDInterfaceType) {
             ))
             infoMenuItemMeta.persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
             infoMenuItem.itemMeta = infoMenuItemMeta
-            pane[0,8] = StaticElement(Drawable.Companion.drawable(infoMenuItem))
+            pane[0,8] = StaticElement(drawable(infoMenuItem))
         }
         /** Add main filter control **/
         withTransform { pane, _ ->
@@ -104,8 +128,8 @@ class TBDInterface(player: Player, interfaceType: TBDInterfaceType) {
             filterMenuItemMeta.lore(filterItemLore)
             filterMenuItemMeta.persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
             filterMenuItem.itemMeta = filterMenuItemMeta
-            pane[0,3] = StaticElement(Drawable.Companion.drawable(filterMenuItem)) {
-                player.playSound(INTERFACE_INTERACT)
+            pane[0,3] = StaticElement(drawable(filterMenuItem)) {
+                player.playSound(Sounds.INTERFACE_INTERACT)
                 when(mainFilter) {
                     IslandExchangeMainFilter.RECENTLY_LISTED -> newExchangeInterface(player, baseListings, TBDInterfaceType.ISLAND_EXCHANGE, IslandExchangeMainFilter.HIGHEST_PRICE, rarityFilter, typeFilter)
                     IslandExchangeMainFilter.HIGHEST_PRICE -> newExchangeInterface(player, baseListings, TBDInterfaceType.ISLAND_EXCHANGE, IslandExchangeMainFilter.LOWEST_PRICE, rarityFilter, typeFilter)
@@ -130,8 +154,8 @@ class TBDInterface(player: Player, interfaceType: TBDInterfaceType) {
             filterMenuItemMeta.lore(filterItemLore)
             filterMenuItemMeta.persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
             filterMenuItem.itemMeta = filterMenuItemMeta
-            pane[0,4] = StaticElement(Drawable.Companion.drawable(filterMenuItem)) {
-                player.playSound(INTERFACE_INTERACT)
+            pane[0,4] = StaticElement(drawable(filterMenuItem)) {
+                player.playSound(Sounds.INTERFACE_INTERACT)
                 when(rarityFilter) {
                     IslandExchangeRarityFilter.ALL -> newExchangeInterface(player, baseListings, TBDInterfaceType.ISLAND_EXCHANGE, mainFilter, IslandExchangeRarityFilter.COMMON, typeFilter)
                     IslandExchangeRarityFilter.COMMON -> newExchangeInterface(player, baseListings, TBDInterfaceType.ISLAND_EXCHANGE, mainFilter, IslandExchangeRarityFilter.UNCOMMON, typeFilter)
@@ -160,8 +184,8 @@ class TBDInterface(player: Player, interfaceType: TBDInterfaceType) {
             filterMenuItemMeta.lore(filterItemLore)
             filterMenuItemMeta.persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
             filterMenuItem.itemMeta = filterMenuItemMeta
-            pane[0,5] = StaticElement(Drawable.Companion.drawable(filterMenuItem)) {
-                player.playSound(INTERFACE_INTERACT)
+            pane[0,5] = StaticElement(drawable(filterMenuItem)) {
+                player.playSound(Sounds.INTERFACE_INTERACT)
                 when(typeFilter) {
                     IslandExchangeTypeFilter.ALL -> newExchangeInterface(player, baseListings, TBDInterfaceType.ISLAND_EXCHANGE, mainFilter, rarityFilter, IslandExchangeTypeFilter.COSMETIC_TOKEN)
                     IslandExchangeTypeFilter.COSMETIC_TOKEN -> newExchangeInterface(player, baseListings, TBDInterfaceType.ISLAND_EXCHANGE, mainFilter, rarityFilter, IslandExchangeTypeFilter.MCC_PLUS_TOKEN)
@@ -177,23 +201,23 @@ class TBDInterface(player: Player, interfaceType: TBDInterfaceType) {
             closeMenuItemMeta.displayName(Formatting.allTags.deserialize("<!i><red>Close Menu"))
             closeMenuItemMeta.persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
             closeMenuItem.itemMeta = closeMenuItemMeta
-            pane[5,4] = StaticElement(Drawable.Companion.drawable(closeMenuItem)) {
-                player.playSound(INTERFACE_INTERACT)
+            pane[5,4] = StaticElement(drawable(closeMenuItem)) {
+                player.playSound(Sounds.INTERFACE_INTERACT)
                 player.closeInventory(InventoryCloseEvent.Reason.PLUGIN)
             }
         }
         /** Draw central information item if the interface cannot be populated **/
         if(listings.isEmpty()) {
             withTransform { pane, _ ->
-                val noMemoriesMenuItem = ItemStack(Material.BARRIER)
-                val noMemoriesMenuItemMeta = noMemoriesMenuItem.itemMeta
-                noMemoriesMenuItemMeta.persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
-                noMemoriesMenuItemMeta.displayName(Formatting.allTags.deserialize("<!i><red>No Island Exchange listings found. <gray>:pensive:"))
-                noMemoriesMenuItemMeta.lore(listOf(
+                val noListingsMenuItem = ItemStack(Material.BARRIER)
+                val noListingsMenuItemMeta = noListingsMenuItem.itemMeta
+                noListingsMenuItemMeta.persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
+                noListingsMenuItemMeta.displayName(Formatting.allTags.deserialize("<!i><red>No Island Exchange listings found. <gray>:pensive:"))
+                noListingsMenuItemMeta.lore(listOf(
                     Formatting.allTags.deserialize("<i><dark_gray>Capitalism is at an all time low.")
                 ))
-                noMemoriesMenuItem.itemMeta = noMemoriesMenuItemMeta
-                pane[2,4] = StaticElement(Drawable.Companion.drawable(noMemoriesMenuItem))
+                noListingsMenuItem.itemMeta = noListingsMenuItemMeta
+                pane[2,4] = StaticElement(drawable(noListingsMenuItem))
             }
         }
         /** Fill border with blank items **/
@@ -223,12 +247,125 @@ class TBDInterface(player: Player, interfaceType: TBDInterfaceType) {
         }
     }
 
-    private suspend fun createMemoryInterface(player: Player, interfaceType: TBDInterfaceType, interfaceFilter: MemoryFilter) = buildChestInterface {
+    suspend fun createPreviousSalesExchangeInterface(player: Player, listings: List<Listings>, interfaceType: TBDInterfaceType) = buildChestInterface {
+        titleSupplier = { Formatting.allTags.deserialize("<!i><b><tbdcolour><shadow:#0:0.75>${interfaceType.interfaceName}") }
+        rows = 6
+        /** Add overview item **/
+        withTransform { pane, _ ->
+            val infoMenuItem = ItemStack(Material.NETHER_STAR)
+            val infoMenuItemMeta = infoMenuItem.itemMeta
+            infoMenuItemMeta.displayName(Formatting.allTags.deserialize("<!i><tbdcolour>${interfaceType.interfaceName}"))
+            infoMenuItemMeta.lore(listOf(
+                Formatting.allTags.deserialize("<!i><white>Here you can find data from the previous"),
+                Formatting.allTags.deserialize("<!i><white>24 hours of listings of the specified item"),
+                Formatting.allTags.deserialize("<!i><white>from the Island Exchange on MCC Island.")
+            ))
+            infoMenuItemMeta.persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
+            infoMenuItem.itemMeta = infoMenuItemMeta
+            pane[0,8] = StaticElement(drawable(infoMenuItem))
+        }
+        /** Add close menu button **/
+        withTransform { pane, _ ->
+            val closeMenuItem = ItemStack(Material.BARRIER)
+            val closeMenuItemMeta = closeMenuItem.itemMeta
+            closeMenuItemMeta.displayName(Formatting.allTags.deserialize("<!i><red>Close Menu"))
+            closeMenuItemMeta.persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
+            closeMenuItem.itemMeta = closeMenuItemMeta
+            pane[5,4] = StaticElement(drawable(closeMenuItem)) {
+                player.playSound(Sounds.INTERFACE_INTERACT)
+                player.closeInventory(InventoryCloseEvent.Reason.PLUGIN)
+            }
+        }
+        /** Add back button **/
+        withTransform { pane, view ->
+            val backItem = ItemStack(Material.SPECTRAL_ARROW)
+            val backItemMeta = backItem.itemMeta
+            backItemMeta.displayName(Formatting.allTags.deserialize("<!i><tbdcolour>Back"))
+            backItemMeta.persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
+            backItem.itemMeta = backItemMeta
+            pane[5,0] = StaticElement(drawable(backItem)) {
+                player.playSound(Sounds.INTERFACE_BACK)
+                runBlocking {
+                    view.parent()?.open()
+                }
+            }
+        }
+        /** Draw central information item if the interface cannot be populated **/
+        if(listings.isEmpty()) {
+            withTransform { pane, _ ->
+                val noListingsMenuItem = ItemStack(Material.BARRIER)
+                val noListingsMenuItemMeta = noListingsMenuItem.itemMeta
+                noListingsMenuItemMeta.persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
+                noListingsMenuItemMeta.displayName(Formatting.allTags.deserialize("<!i><red>No Island Exchange listings found. <gray>:pensive:"))
+                noListingsMenuItemMeta.lore(listOf(
+                    Formatting.allTags.deserialize("<i><dark_gray>Capitalism is at an all time low.")
+                ))
+                noListingsMenuItem.itemMeta = noListingsMenuItemMeta
+                pane[2,4] = StaticElement(drawable(noListingsMenuItem))
+            }
+        } else {
+            var totalCost = 0
+            for(soldListing in listings) {
+                totalCost += (soldListing.cost / soldListing.item.amount)
+            }
+            val averageCost = totalCost / listings.size
+            val cheapestListing = listings.sortedBy { l -> l.cost / l.item.amount }[0]
+            val minCost = cheapestListing.cost / cheapestListing.item.amount
+            val mostExpensiveListing = listings.sortedByDescending { l -> l.cost / l.item.amount }[0]
+            val maxCost = mostExpensiveListing.cost / mostExpensiveListing.item.amount
+            /** Add sales data item **/
+            withTransform { pane, _ ->
+                val salesDataItem = listings[0].item
+                val salesDataItemMeta = salesDataItem.itemMeta
+                val existingLore = salesDataItemMeta.lore()
+                val salesDataLore = listOf(
+                    Formatting.allTags.deserialize("<!i><tbdcolour>Amount of sales: <white>${listings.size}"),
+                    Formatting.allTags.deserialize("<!i><tbdcolour>Average cost: <#ffff00>\uD83E\uDE99<white>${NumberFormat.getIntegerInstance().format(averageCost)}"),
+                    Formatting.allTags.deserialize("<!i><tbdcolour>Lowest cost: <#ffff00>\uD83E\uDE99<white>${NumberFormat.getIntegerInstance().format(minCost)}"),
+                    Formatting.allTags.deserialize("<!i><tbdcolour>Highest cost: <#ffff00>\uD83E\uDE99<white>${NumberFormat.getIntegerInstance().format(maxCost)}"),
+                )
+                for(component in salesDataLore) existingLore?.add(component)
+                salesDataItemMeta.lore(existingLore)
+                salesDataItemMeta.persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
+                salesDataItem.itemMeta = salesDataItemMeta
+                pane[2,4] = StaticElement(drawable(salesDataItem))
+            }
+        }
+
+        /** Fill border with blank items **/
+        withTransform { pane, _ ->
+            val borderItem = ItemStack(Material.GRAY_STAINED_GLASS_PANE).apply {
+                itemMeta = itemMeta.apply {
+                    persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
+                    isHideTooltip = true
+                }
+            }
+            val borderElement = StaticElement(drawable(borderItem))
+            for(column in 0..8) {
+                for(row in 0..5) {
+                    if(column in listOf(0, 8) || row in listOf(0, 5)) {
+                        if(pane[row, column] == null) {
+                            pane[row, column] = borderElement
+                        }
+                    }
+                }
+            }
+        }
+    }.open(player)
+
+    fun newPreviousSalesExchangeInterface(player: Player, previousItemName: String, interfaceType: TBDInterfaceType) {
+        runBlocking {
+            val listings = IslandAPI.previousSales(previousItemName)
+            createPreviousSalesExchangeInterface(player, listings, TBDInterfaceType.ISLAND_EXCHANGE_HISTORY)
+        }
+    }
+
+    suspend fun createMemoryInterface(player: Player, interfaceType: TBDInterfaceType, interfaceFilter: MemoryFilter) = buildChestInterface {
         val memories = if(interfaceFilter != MemoryFilter.SEASON_THREE) Memory.getMemories(interfaceFilter).sortedBy { it.type.name } else Memory.getMemories(interfaceFilter)
-        titleSupplier = { Formatting.allTags.deserialize("<!i><b><tbdcolour><shadow:#0>${interfaceType.interfaceName}") }
+        titleSupplier = { Formatting.allTags.deserialize("<!i><b><tbdcolour><shadow:#0:0.75>${interfaceType.interfaceName}") }
         rows = 6
         /** Apply pagination transform **/
-        addTransform(PaginatedMenu(memories))
+        addTransform(PaginatedMemoryMenu(memories))
         /** Add overview item **/
         withTransform { pane, _ ->
             val infoMenuItem = ItemStack(Material.NETHER_STAR)
@@ -244,7 +381,7 @@ class TBDInterface(player: Player, interfaceType: TBDInterfaceType) {
             ))
             infoMenuItemMeta.persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
             infoMenuItem.itemMeta = infoMenuItemMeta
-            pane[0,4] = StaticElement(Drawable.Companion.drawable(infoMenuItem))
+            pane[0,4] = StaticElement(drawable(infoMenuItem))
         }
         /** Add filter control **/
         withTransform { pane, _ ->
@@ -264,8 +401,8 @@ class TBDInterface(player: Player, interfaceType: TBDInterfaceType) {
             filterMenuItemMeta.lore(filterItemLore)
             filterMenuItemMeta.persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
             filterMenuItem.itemMeta = filterMenuItemMeta
-            pane[5,3] = StaticElement(Drawable.Companion.drawable(filterMenuItem)) {
-                player.playSound(INTERFACE_INTERACT)
+            pane[5,3] = StaticElement(drawable(filterMenuItem)) {
+                player.playSound(Sounds.INTERFACE_INTERACT)
                 when(interfaceFilter) {
                     MemoryFilter.SEASON_ONE -> newMemoryInterface(player, TBDInterfaceType.MEMORY_ARCHIVE, MemoryFilter.SEASON_TWO)
                     MemoryFilter.SEASON_TWO -> newMemoryInterface(player, TBDInterfaceType.MEMORY_ARCHIVE, MemoryFilter.SEASON_THREE)
@@ -281,8 +418,8 @@ class TBDInterface(player: Player, interfaceType: TBDInterfaceType) {
             closeMenuItemMeta.displayName(Formatting.allTags.deserialize("<!i><red>Close Menu"))
             closeMenuItemMeta.persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
             closeMenuItem.itemMeta = closeMenuItemMeta
-            pane[5,4] = StaticElement(Drawable.Companion.drawable(closeMenuItem)) {
-                player.playSound(INTERFACE_INTERACT)
+            pane[5,4] = StaticElement(drawable(closeMenuItem)) {
+                player.playSound(Sounds.INTERFACE_INTERACT)
                 player.closeInventory(InventoryCloseEvent.Reason.PLUGIN)
             }
         }
@@ -297,7 +434,7 @@ class TBDInterface(player: Player, interfaceType: TBDInterfaceType) {
                     Formatting.allTags.deserialize("<i><dark_gray>They were wiped by the elite in 2007.")
                 ))
                 noMemoriesMenuItem.itemMeta = noMemoriesMenuItemMeta
-                pane[2,4] = StaticElement(Drawable.Companion.drawable(noMemoriesMenuItem))
+                pane[2,4] = StaticElement(drawable(noMemoriesMenuItem))
             }
         }
         /** Fill border with blank items **/
@@ -328,7 +465,7 @@ class TBDInterface(player: Player, interfaceType: TBDInterfaceType) {
     }
 }
 
-class PaginatedMenu(items: List<ItemStack>): PaginationTransformation<Pane, ItemStack>(
+class PaginatedMemoryMenu(items: List<ItemStack>): PaginationTransformation<Pane, ItemStack>(
     positionGenerator = GridPositionGenerator { buildList {
             for(row in 1..4) {
                 for(col in 1..7) {
@@ -340,37 +477,86 @@ class PaginatedMenu(items: List<ItemStack>): PaginationTransformation<Pane, Item
     back = PaginationButton(
         position = GridPoint(5, 2),
         drawable = drawable(ItemStack(Material.ARROW).apply { itemMeta = itemMeta.apply {
-            displayName(Formatting.allTags.deserialize("<!i><tbdcolour>Back"))
+            displayName(Formatting.allTags.deserialize("<!i><tbdcolour>Previous Page"))
             persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
         } }),
         increments = mapOf(Pair(ClickType.LEFT, -1)),
-        clickHandler = { player -> player.playSound(INTERFACE_INTERACT) }
+        clickHandler = { player -> player.playSound(Sounds.INTERFACE_INTERACT) }
     ),
     forward = PaginationButton(
         position = GridPoint(5, 6),
         drawable = drawable(ItemStack(Material.ARROW).apply { itemMeta = itemMeta.apply {
-            displayName(Formatting.allTags.deserialize("<!i><tbdcolour>Next"))
+            displayName(Formatting.allTags.deserialize("<!i><tbdcolour>Next Page"))
             persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
         } }),
         increments = mapOf(Pair(ClickType.LEFT, 1)),
-        clickHandler = { player -> player.playSound(INTERFACE_INTERACT) }
+        clickHandler = { player -> player.playSound(Sounds.INTERFACE_INTERACT) }
+    )) {
+    override suspend fun drawElement(index: Int, element: ItemStack): Element {
+        return StaticElement(drawable(if(element.type == Material.AIR)
+            ItemStack(Material.BARRIER).apply {
+                itemMeta = itemMeta.apply {
+                    displayName(Formatting.allTags.deserialize("<!i><red>An error occurred when loading this item."))
+                    persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
+                }
+            } else element.apply { itemMeta = itemMeta.apply { persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true) } })
+        )
+    }
+}
+
+class PaginatedIslandExchangeMenu(items: List<ItemStack>): PaginationTransformation<Pane, ItemStack>(
+    positionGenerator = GridPositionGenerator { buildList {
+            for(row in 1..4) {
+                for(col in 1..7) {
+                    add(GridPoint(row, col))
+                }
+            }
+        }},
+    items,
+    back = PaginationButton(
+        position = GridPoint(5, 2),
+        drawable = drawable(ItemStack(Material.ARROW).apply { itemMeta = itemMeta.apply {
+            displayName(Formatting.allTags.deserialize("<!i><tbdcolour>Previous Page"))
+            persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
+        } }),
+        increments = mapOf(Pair(ClickType.LEFT, -1)),
+        clickHandler = { player -> player.playSound(Sounds.INTERFACE_INTERACT) }
+    ),
+    forward = PaginationButton(
+        position = GridPoint(5, 6),
+        drawable = drawable(ItemStack(Material.ARROW).apply { itemMeta = itemMeta.apply {
+            displayName(Formatting.allTags.deserialize("<!i><tbdcolour>Next Page"))
+            persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
+        } }),
+        increments = mapOf(Pair(ClickType.LEFT, 1)),
+        clickHandler = { player -> player.playSound(Sounds.INTERFACE_INTERACT) }
     )
 ) {
     override suspend fun drawElement(index: Int, element: ItemStack): Element {
         return StaticElement(drawable(if(element.type == Material.AIR)
-                ItemStack(Material.BARRIER).apply {
-                val itemMeta = this.itemMeta
-                itemMeta.displayName(Formatting.allTags.deserialize("<!i><red>An error occurred when loading this item."))
-                itemMeta.persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
-                this.itemMeta = itemMeta
-            } else element.apply { this.itemMeta.apply { persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true) } })
-        )
+            ItemStack(Material.BARRIER).apply {
+                itemMeta = itemMeta.apply {
+                    displayName(Formatting.allTags.deserialize("<!i><red>An error occurred when loading this item."))
+                    persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
+                }
+            } else element.apply { itemMeta = itemMeta.apply { persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true) } })
+        ) { click ->
+            val player = click.player
+            if(click.type == ClickType.LEFT) {
+                player.playSound(Sounds.INTERFACE_ERROR)
+            }
+            if(click.type == ClickType.RIGHT) {
+                player.playSound(Sounds.INTERFACE_ENTER_SUB_MENU)
+                TBDInterfaces.newPreviousSalesExchangeInterface(player, PlainTextComponentSerializer.plainText().serialize(element.effectiveName()).removeSuffix(" Token"), TBDInterfaceType.ISLAND_EXCHANGE_HISTORY)
+            }
+        }
     }
 }
 
 enum class TBDInterfaceType(val interfaceName: String) {
     MEMORY_ARCHIVE("TBD SMP Memory Archive"),
-    ISLAND_EXCHANGE("Island Exchange")
+    ISLAND_EXCHANGE("Island Exchange"),
+    ISLAND_EXCHANGE_HISTORY("Island Exchange: Past Sales")
 }
 
 enum class MemoryFilter(val memoryFilterName: String, val memoryFilterConfigSuffix: String) {

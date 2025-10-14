@@ -13,6 +13,7 @@ import item.convertRarity
 import kotlinx.coroutines.runBlocking
 import net.kyori.adventure.text.Component
 import net.tbdsmp.tbdseason4.ActiveIslandExchangeListingsQuery
+import net.tbdsmp.tbdseason4.PreviousExchangeSalesQuery
 import net.tbdsmp.tbdseason4.type.CosmeticCategory
 import org.bukkit.Material
 import org.bukkit.inventory.ItemFlag
@@ -48,7 +49,10 @@ object IslandAPI {
                     Formatting.allTags.deserialize("<!i><gray>Remaining Time: <white>${dateTimeDifference(listing.endTime.toString())}"),
                     Formatting.allTags.deserialize("<!i><gray>Listed Price: <#ffff00>\uD83E\uDE99<white>${NumberFormat.getIntegerInstance().format(listing.cost)}"),
                     Formatting.allTags.deserialize("<!i>"),
-                    Formatting.allTags.deserialize("<!i><aqua>Join <b><white>play.<#ffff00>mccisland<white>.net<aqua></b> to purchase.")
+                    Formatting.allTags.deserialize("<!i><aqua>Join <b><white>play.<#ffff00>mccisland<white>.net<aqua></b> to purchase."),
+                    Formatting.allTags.deserialize("<!i>"),
+                    Formatting.allTags.deserialize("<!i><tbdcolour>> <key:key.attack> <red>coming soon™..."),
+                    Formatting.allTags.deserialize("<!i><tbdcolour>> <key:key.use> <white>to view last 24hrs sales.")
                 ))
                 if(item.type in listOf(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS, Material.LEATHER_HORSE_ARMOR)) {
                     meta = meta as LeatherArmorMeta
@@ -75,13 +79,64 @@ object IslandAPI {
                     Formatting.allTags.deserialize("<!i><gray>Remaining Time: <white>${dateTimeDifference(listing.endTime.toString())}"),
                     Formatting.allTags.deserialize("<!i><gray>Listed Price: <#ffff00>\uD83E\uDE99<white>${NumberFormat.getIntegerInstance().format(listing.cost)}"),
                     Formatting.allTags.deserialize("<!i>"),
-                    Formatting.allTags.deserialize("<!i><aqua>Join <b><white>play.<#ffff00>mccisland<white>.net<aqua></b> to purchase.")
+                    Formatting.allTags.deserialize("<!i><aqua>Join <b><white>play.<#ffff00>mccisland<white>.net<aqua></b> to purchase."),
+                    Formatting.allTags.deserialize("<!i>"),
+                    Formatting.allTags.deserialize("<!i><tbdcolour>> <key:key.attack> <red>coming soon™..."),
+                    Formatting.allTags.deserialize("<!i><tbdcolour>> <key:key.use> <white>to view last 24hrs sales.")
                 )
                 for(component in auctionLoreLines) loreLines.add(component)
                 meta.lore(loreLines)
                 item.itemMeta = meta
                 val assetType = if(simpleAsset.name.contains("MCC+ Token")) IslandAssetType.MCC_PLUS_TOKEN else IslandAssetType.OTHER
                 listings.add(Listings(item, listing.creationTime.toString(), listing.endTime.toString(), assetType, rarity, listing.cost))
+            }
+        }
+        listings
+    }
+
+    fun previousSales(soldItem: String): List<Listings> = runBlocking {
+        val listings = mutableListOf<Listings>()
+        val response = apolloClient.query(PreviousExchangeSalesQuery()).execute()
+        val queryListings = response.data?.soldIslandExchangeListings ?: emptyList()
+
+        for(listing in queryListings) {
+            if(listing.asset.onCosmeticToken != null) {
+                val cosmeticToken = listing.asset.onCosmeticToken
+                if(cosmeticToken.name == soldItem) {
+                    val rarity = cosmeticToken.rarity.convertRarity()
+                    val item = ItemStack(getCosmeticMaterial(cosmeticToken.cosmetic.category), listing.amount)
+                    var meta = item.itemMeta
+                    meta.displayName(Formatting.allTags.deserialize("<!i><${rarity.colourHex}>${cosmeticToken.name} Token<white>: Sales Data"))
+                    meta.lore(listOf(
+                        Formatting.allTags.deserialize("<!i><white>${rarity.rarityGlyph}${ItemType.CONSUMABLE.typeGlyph}"),
+                        Formatting.allTags.deserialize("<!i>"),
+                        Formatting.allTags.deserialize("<!i><aqua>Unlock the \"${cosmeticToken.name}\" ${cosmeticToken.cosmetic.category.name.lowercase()}"),
+                        Formatting.allTags.deserialize("<!i><aqua>in your wardrobe."),
+                        Formatting.allTags.deserialize("<!i>")
+                    ))
+                    if(item.type in listOf(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS, Material.LEATHER_HORSE_ARMOR)) {
+                        meta = meta as LeatherArmorMeta
+                        meta.setColor(rarity.colour)
+                    }
+                    meta.addItemFlags(ItemFlag.HIDE_DYE, ItemFlag.HIDE_ATTRIBUTES)
+                    item.itemMeta = meta
+                    listings.add(Listings(item, listing.creationTime.toString(), listing.endTime.toString(), IslandAssetType.COSMETIC_TOKEN, rarity, listing.cost))
+                }
+            }
+            if(listing.asset.onSimpleAsset != null) {
+                val simpleAsset = listing.asset.onSimpleAsset
+                if(simpleAsset.name == soldItem) {
+                    val rarity = simpleAsset.rarity.convertRarity()
+                    val item = ItemStack(getSimpleAssetMaterial(simpleAsset.name), listing.amount)
+                    val meta = item.itemMeta
+                    meta.displayName(Formatting.allTags.deserialize("<!i><${rarity.colourHex}>${simpleAsset.name}<white>: Sales Data"))
+                    val loreLines = mutableListOf<Component>()
+                    loreLines.add(Formatting.allTags.deserialize("<!i><white>${rarity.rarityGlyph}${ItemType.CONSUMABLE.typeGlyph}"))
+                    for(component in getSimpleAssetLore(simpleAsset.name)) loreLines.add(component)
+                    meta.lore(loreLines)
+                    item.itemMeta = meta
+                    listings.add(Listings(item, listing.creationTime.toString(), listing.endTime.toString(), IslandAssetType.COSMETIC_TOKEN, rarity, listing.cost))
+                }
             }
         }
         listings
@@ -96,7 +151,7 @@ object IslandAPI {
             CosmeticCategory.TRAIL -> Material.LEATHER_LEGGINGS
             CosmeticCategory.CLOAK -> Material.LEATHER_CHESTPLATE
             CosmeticCategory.ROD -> Material.FISHING_ROD
-            CosmeticCategory.UNKNOWN__ -> Material.BARRIER
+            CosmeticCategory.UNKNOWN__ -> Material.STRUCTURE_VOID
         }
     }
 
