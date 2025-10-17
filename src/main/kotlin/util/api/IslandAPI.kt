@@ -52,9 +52,10 @@ object IslandAPI {
                     Formatting.allTags.deserialize("<!i>"),
                     Formatting.allTags.deserialize("<!i><aqua>Join <b><white>play.<#ffff00>mccisland<white>.net<aqua></b> to purchase."),
                     Formatting.allTags.deserialize("<!i>"),
-                    Formatting.allTags.deserialize("<!i><tbdcolour>> <key:key.attack> <white>to inspect cosmetic."),
-                    Formatting.allTags.deserialize("<!i><tbdcolour>> <key:key.use> <white>to view last 24hrs sales."),
-                    Formatting.allTags.deserialize("<!i><tbdcolour>> Shift + <key:key.attack> <red>coming soon™...")
+                    Formatting.allTags.deserialize("<!i><tbdcolour>> <key:key.attack> <white>to inspect cosmetic"),
+                    Formatting.allTags.deserialize("<!i><tbdcolour>> <key:key.use> <white>to view last 24hrs sales"),
+                    // Formatting.allTags.deserialize("<!i><tbdcolour>> Shift + <key:key.attack> <red>coming soon™..."),
+                    Formatting.allTags.deserialize("<!i><tbdcolour>> Shift + <key:key.use> <white>to share to chat")
                 ))
                 if(item.type in listOf(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS, Material.LEATHER_HORSE_ARMOR)) {
                     meta = meta as LeatherArmorMeta
@@ -72,19 +73,17 @@ object IslandAPI {
                 meta.displayName(Formatting.allTags.deserialize("<!i><${rarity.colourHex}>${simpleAsset.name}"))
 
                 val loreLines = mutableListOf<Component>()
-                // Add rarity and type tag
                 loreLines.add(Formatting.allTags.deserialize("<!i><white>${rarity.rarityGlyph}${ItemType.CONSUMABLE.typeGlyph}"))
-                // Add item description
                 for(component in getSimpleAssetLore(simpleAsset.name)) loreLines.add(component)
-                // Add auction lines
                 val auctionLoreLines = listOf(
                     Formatting.allTags.deserialize("<!i><gray>Remaining Time: <white>${dateTimeDifference(listing.endTime.toString())}"),
                     Formatting.allTags.deserialize("<!i><gray>Listed Price: <#ffff00>\uD83E\uDE99<white>${NumberFormat.getIntegerInstance().format(listing.cost)}"),
                     Formatting.allTags.deserialize("<!i>"),
-                    Formatting.allTags.deserialize("<!i><aqua>Join <b><white>play.<#ffff00>mccisland<white>.net<aqua></b> to purchase."),
+                    Formatting.allTags.deserialize("<!i><aqua>Join <b><white>play.<#ffff00>mccisland<white>.net<aqua></b> to purchase"),
                     Formatting.allTags.deserialize("<!i>"),
-                    Formatting.allTags.deserialize("<!i><tbdcolour>> <key:key.use> <white>to view last 24hrs sales."),
-                    Formatting.allTags.deserialize("<!i><tbdcolour>> Shift + <key:key.attack> <red>coming soon™...")
+                    Formatting.allTags.deserialize("<!i><tbdcolour>> <key:key.use> <white>to view last 24hrs sales"),
+                    // Formatting.allTags.deserialize("<!i><tbdcolour>> Shift + <key:key.attack> <red>coming soon™..."),
+                    Formatting.allTags.deserialize("<!i><tbdcolour>> Shift + <key:key.use> <white>to share to chat")
                 )
                 for(component in auctionLoreLines) loreLines.add(component)
                 meta.lore(loreLines)
@@ -94,45 +93,6 @@ object IslandAPI {
             }
         }
         listings
-    }
-
-    fun getCosmetic(cosmeticName: String): ItemStack = runBlocking {
-        var itemStack = ItemStack.empty()
-        val response = apolloClient.query(ActiveIslandExchangeListingsQuery()).execute()
-        val queryListings = response.data?.activeIslandExchangeListings ?: emptyList()
-
-        for(listing in queryListings) {
-            if(listing.asset.onCosmeticToken != null) {
-                val cosmeticToken = listing.asset.onCosmeticToken
-                if(cosmeticToken.name == cosmeticName) {
-                    val cosmetic = cosmeticToken.cosmetic
-                    val rarity = cosmetic.rarity.convertRarity()
-                    val item = ItemStack(getCosmeticMaterial(cosmetic.category), listing.amount)
-                    var meta = item.itemMeta
-                    meta.displayName(Formatting.allTags.deserialize("<!i><${rarity.colourHex}>${cosmetic.name}"))
-                    meta.lore(listOf(
-                        Formatting.allTags.deserialize("<!i><white>${rarity.rarityGlyph}${ItemType.CONSUMABLE.typeGlyph}"),
-                        Formatting.allTags.deserialize("<!i>"),
-                        Formatting.allTags.deserialize("<!i><tbdcolour>Obtainment:"),
-                        Formatting.allTags.deserialize("<!i><gray>${cosmetic.obtainmentHint}"),
-                        Formatting.allTags.deserialize("<!i>"),
-                        Formatting.allTags.deserialize("<!i><tbdcolour>Type: <white>${cosmetic.type.name.lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }}"),
-                        Formatting.allTags.deserialize("<!i><tbdcolour>Collection: <white>${cosmetic.collection}"),
-                        Formatting.allTags.deserialize("<!i><tbdcolour>Trophies: <white>${cosmetic.trophies}"),
-                        Formatting.allTags.deserialize("<!i><tbdcolour>Global amount owned: <white>${cosmetic.globalNumberOwned}")
-
-                    ))
-                    if(item.type in listOf(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS, Material.LEATHER_HORSE_ARMOR)) {
-                        meta = meta as LeatherArmorMeta
-                        meta.setColor(rarity.colour)
-                    }
-                    meta.addItemFlags(ItemFlag.HIDE_DYE, ItemFlag.HIDE_ATTRIBUTES)
-                    item.itemMeta = meta
-                    itemStack = item
-                }
-            }
-        }
-        itemStack
     }
 
     fun previousSales(soldItem: String): List<Listings> = runBlocking {
@@ -181,6 +141,45 @@ object IslandAPI {
             }
         }
         listings
+    }
+
+    fun getCosmetic(cosmeticName: String): ItemStack = runBlocking {
+        var itemStack = ItemStack.empty()
+        val response = apolloClient.query(ActiveIslandExchangeListingsQuery()).execute()
+        val queryListings = response.data?.activeIslandExchangeListings ?: emptyList()
+
+        for(listing in queryListings) {
+            if(listing.asset.onCosmeticToken != null) {
+                val cosmeticToken = listing.asset.onCosmeticToken
+                if(cosmeticToken.name == cosmeticName) {
+                    val cosmetic = cosmeticToken.cosmetic
+                    val rarity = cosmetic.rarity.convertRarity()
+                    val item = ItemStack(getCosmeticMaterial(cosmetic.category), listing.amount)
+                    var meta = item.itemMeta
+                    meta.displayName(Formatting.allTags.deserialize("<!i><${rarity.colourHex}>${cosmetic.name}"))
+                    meta.lore(listOf(
+                        Formatting.allTags.deserialize("<!i><white>${rarity.rarityGlyph}${ItemType.CONSUMABLE.typeGlyph}"),
+                        Formatting.allTags.deserialize("<!i>"),
+                        Formatting.allTags.deserialize("<!i><tbdcolour>Obtainment:"),
+                        Formatting.allTags.deserialize("<!i><gray>${cosmetic.obtainmentHint}"),
+                        Formatting.allTags.deserialize("<!i>"),
+                        Formatting.allTags.deserialize("<!i><tbdcolour>Type: <white>${cosmetic.type.name.lowercase().replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }}"),
+                        Formatting.allTags.deserialize("<!i><tbdcolour>Collection: <white>${cosmetic.collection}"),
+                        Formatting.allTags.deserialize("<!i><tbdcolour>Trophies: <white>${cosmetic.trophies}"),
+                        Formatting.allTags.deserialize("<!i><tbdcolour>Global amount owned: <white>${cosmetic.globalNumberOwned}")
+
+                    ))
+                    if(item.type in listOf(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS, Material.LEATHER_HORSE_ARMOR)) {
+                        meta = meta as LeatherArmorMeta
+                        meta.setColor(rarity.colour)
+                    }
+                    meta.addItemFlags(ItemFlag.HIDE_DYE, ItemFlag.HIDE_ATTRIBUTES)
+                    item.itemMeta = meta
+                    itemStack = item
+                }
+            }
+        }
+        itemStack
     }
 
     private fun getCosmeticMaterial(cosmeticCategory: CosmeticCategory): Material {

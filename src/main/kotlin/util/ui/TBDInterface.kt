@@ -11,6 +11,7 @@ import com.noxcrew.interfaces.interfaces.buildChestInterface
 import com.noxcrew.interfaces.pane.Pane
 import com.noxcrew.interfaces.transform.builtin.PaginationButton
 import com.noxcrew.interfaces.transform.builtin.PaginationTransformation
+import command.Flexing
 import item.ItemRarity
 import kotlinx.coroutines.runBlocking
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
@@ -640,6 +641,10 @@ class PaginatedIslandExchangeMenu(items: List<ItemStack>): PaginationTransformat
                 ClickType.RIGHT -> {
                     player.playSound(Sounds.INTERFACE_ENTER_SUB_MENU)
                     TBDInterfaces.newPreviousSalesExchangeInterface(player, PlainTextComponentSerializer.plainText().serialize(element.effectiveName()).removeSuffix(" Token"), TBDInterfaceType.ISLAND_EXCHANGE_HISTORY)
+                }
+                ClickType.SHIFT_RIGHT -> {
+                    player.playSound(Sounds.INTERFACE_SHARE_ITEM)
+                    Flexing.flex(player, element)
                 } else -> {
                     player.playSound(Sounds.INTERFACE_ERROR)
                 }

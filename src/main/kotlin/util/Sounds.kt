@@ -37,6 +37,7 @@ object Sounds {
     val INTERFACE_ENTER_SUB_MENU = sound(key("block.vault.activate"), Source.MASTER, 1f, 1f)
     val INTERFACE_BACK = sound(key("block.vault.deactivate"), Source.MASTER, 1f, 1f)
     val INTERFACE_ERROR = sound(key("block.vault.reject_rewarded_player"), Source.MASTER, 1f, 1f)
+    val INTERFACE_SHARE_ITEM = sound(key("block.trial_spawner.ominous_activate"), Source.MASTER, 1f, 1f)
     val MEMORY_SAVE = sound(key("entity.evoker.cast_spell"), Source.MASTER, 1f, 1f)
     val MEMORY_ALREADY_EXISTS = sound(key("entity.allay.ambient_with_item"), Source.MASTER, 1f, 1f)
     val MEMORY_INVALID = sound(key("entity.allay.ambient_without_item"), Source.MASTER, 1f, 1f)
