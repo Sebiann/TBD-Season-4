@@ -60,7 +60,7 @@ class PlayerJoin : Listener {
 
     private fun sendTabList(audience: Audience) {
         audience.sendPlayerListHeader(mm.deserialize("<newline><newline><newline><newline><newline>     \uF015    <newline>"))
-        audience.sendPlayerListFooter(mm.deserialize("<newline><gradient:#ff510c:#ff77a8>  Welcome to TBD Season 4!  <newline>"))
+        audience.sendPlayerListFooter(mm.deserialize("<newline><gradient:#ff510c:#ff77a8>  TBD SMP<white>: Season 4  <newline>"))
     }
 
     private fun loadResourcePacks(configPacks: List<ResourcePack>) {

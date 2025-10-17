@@ -25,6 +25,9 @@ query ActiveIslandExchangeListings {
                     obtainmentHint
                     type
                     uniqueIdentifier
+                    trophies
+                    isBonusTrophies
+                    globalNumberOwned
                 }
             }
         }

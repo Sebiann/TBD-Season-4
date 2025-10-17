@@ -2,38 +2,18 @@ package event.player
 
 import chat.Formatting
 import logger
-import lore.Divinity
 import net.kyori.adventure.text.TranslatableComponent
 import net.kyori.adventure.text.TranslationArgument
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
-import org.bukkit.persistence.PersistentDataType
-import util.Keys.DIVINITY_CHAINS
 import kotlin.random.Random
 
 class DeathEvent: Listener {
     @EventHandler
     private fun onDeath(e: PlayerDeathEvent) {
-        if(e.player.killer != null) {
-            val killer = e.player.killer!!
-            if(killer.inventory.itemInMainHand.persistentDataContainer.get(DIVINITY_CHAINS, PersistentDataType.BOOLEAN) == true) {
-                Divinity.chainPlayer(e.player)
-                e.deathMessage(null)
-                e.player.health = 20.0
-                e.isCancelled = true
-                return
-            }
-        }
-        if(Divinity.chainedPlayers.containsKey(e.player)) {
-            e.deathMessage(null)
-            e.isCancelled = true
-            return
-        }
-
-        if (e.player.isInvisible || e.player.killer?.isInvisible == true)
-            logger.info("Original death message: \"${plainText().serialize(e.deathMessage()!!)}\"")
+        if (e.player.isInvisible || e.player.killer?.isInvisible == true) logger.info("Original death message: \"${plainText().serialize(e.deathMessage()!!)}\"")
 
         val component = e.deathMessage() as? TranslatableComponent ?: run { logger.warning("Another plugin edited this death message."); return; }
         val newArgs = mutableListOf<TranslationArgument>()

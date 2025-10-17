@@ -30,7 +30,7 @@ import java.time.Instant
 
 class TBDInterface(player: Player, interfaceType: TBDInterfaceType) {
     init {
-        when (interfaceType) {
+        when(interfaceType) {
             TBDInterfaceType.MEMORY_ARCHIVE -> {
                 runBlocking {
                     TBDInterfaces.createMemoryInterface(
@@ -57,6 +57,15 @@ class TBDInterface(player: Player, interfaceType: TBDInterfaceType) {
                     TBDInterfaces.createPreviousSalesExchangeInterface(
                         player,
                         emptyList(),
+                        interfaceType
+                    )
+                }
+            }
+            TBDInterfaceType.ISLAND_COSMETIC_INSPECT -> {
+                runBlocking {
+                    TBDInterfaces.createInspectCosmeticInterface(
+                        player,
+                        ItemStack.empty(),
                         interfaceType
                     )
                 }
@@ -256,8 +265,8 @@ object TBDInterfaces {
             val infoMenuItemMeta = infoMenuItem.itemMeta
             infoMenuItemMeta.displayName(Formatting.allTags.deserialize("<!i><tbdcolour>${interfaceType.interfaceName}"))
             infoMenuItemMeta.lore(listOf(
-                Formatting.allTags.deserialize("<!i><white>Here you can find data from the previous"),
-                Formatting.allTags.deserialize("<!i><white>24 hours of listings of the specified item"),
+                Formatting.allTags.deserialize("<!i><white>Here you can find data, from the previous"),
+                Formatting.allTags.deserialize("<!i><white>24 hours of listings, of the specified item"),
                 Formatting.allTags.deserialize("<!i><white>from the Island Exchange on MCC Island.")
             ))
             infoMenuItemMeta.persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
@@ -356,7 +365,84 @@ object TBDInterfaces {
     fun newPreviousSalesExchangeInterface(player: Player, previousItemName: String, interfaceType: TBDInterfaceType) {
         runBlocking {
             val listings = IslandAPI.previousSales(previousItemName)
-            createPreviousSalesExchangeInterface(player, listings, TBDInterfaceType.ISLAND_EXCHANGE_HISTORY)
+            createPreviousSalesExchangeInterface(player, listings, interfaceType)
+        }
+    }
+
+    suspend fun createInspectCosmeticInterface(player: Player, item: ItemStack, interfaceType: TBDInterfaceType) = buildChestInterface {
+        titleSupplier = { Formatting.allTags.deserialize("<!i><b><tbdcolour><shadow:#0:0.75>${interfaceType.interfaceName}") }
+        rows = 6
+        /** Add overview item **/
+        withTransform { pane, _ ->
+            val infoMenuItem = ItemStack(Material.NETHER_STAR)
+            val infoMenuItemMeta = infoMenuItem.itemMeta
+            infoMenuItemMeta.displayName(Formatting.allTags.deserialize("<!i><tbdcolour>${interfaceType.interfaceName}"))
+            infoMenuItemMeta.lore(listOf(
+                Formatting.allTags.deserialize("<!i><white>Here you can find cosmetic data from"),
+                Formatting.allTags.deserialize("<!i><white>the previously selected cosmetic"),
+                Formatting.allTags.deserialize("<!i><white>from the Island Exchange on MCC Island.")
+            ))
+            infoMenuItemMeta.persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
+            infoMenuItem.itemMeta = infoMenuItemMeta
+            pane[0,8] = StaticElement(drawable(infoMenuItem))
+        }
+        /** Add close menu button **/
+        withTransform { pane, _ ->
+            val closeMenuItem = ItemStack(Material.BARRIER)
+            val closeMenuItemMeta = closeMenuItem.itemMeta
+            closeMenuItemMeta.displayName(Formatting.allTags.deserialize("<!i><red>Close Menu"))
+            closeMenuItemMeta.persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
+            closeMenuItem.itemMeta = closeMenuItemMeta
+            pane[5,4] = StaticElement(drawable(closeMenuItem)) {
+                player.playSound(Sounds.INTERFACE_INTERACT)
+                player.closeInventory(InventoryCloseEvent.Reason.PLUGIN)
+            }
+        }
+        /** Add back button **/
+        withTransform { pane, view ->
+            val backItem = ItemStack(Material.SPECTRAL_ARROW)
+            val backItemMeta = backItem.itemMeta
+            backItemMeta.displayName(Formatting.allTags.deserialize("<!i><tbdcolour>Back"))
+            backItemMeta.persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
+            backItem.itemMeta = backItemMeta
+            pane[5,0] = StaticElement(drawable(backItem)) {
+                player.playSound(Sounds.INTERFACE_BACK)
+                runBlocking {
+                    view.parent()?.open()
+                }
+            }
+        }
+
+        /** Add cosmetic inspection item **/
+        withTransform { pane, _ ->
+            pane[2,4] = StaticElement(drawable(item))
+        }
+
+        /** Fill border with blank items **/
+        withTransform { pane, _ ->
+            val borderItem = ItemStack(Material.GRAY_STAINED_GLASS_PANE).apply {
+                itemMeta = itemMeta.apply {
+                    persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true)
+                    isHideTooltip = true
+                }
+            }
+            val borderElement = StaticElement(drawable(borderItem))
+            for(column in 0..8) {
+                for(row in 0..5) {
+                    if(column in listOf(0, 8) || row in listOf(0, 5)) {
+                        if(pane[row, column] == null) {
+                            pane[row, column] = borderElement
+                        }
+                    }
+                }
+            }
+        }
+    }.open(player)
+
+    fun newInspectCosmeticInterface(player: Player, cosmeticName: String, interfaceType: TBDInterfaceType) {
+        runBlocking {
+            val cosmetic = IslandAPI.getCosmetic(cosmeticName)
+            createInspectCosmeticInterface(player, cosmetic, interfaceType)
         }
     }
 
@@ -542,12 +628,21 @@ class PaginatedIslandExchangeMenu(items: List<ItemStack>): PaginationTransformat
             } else element.apply { itemMeta = itemMeta.apply { persistentDataContainer.set(NOXESIUM_IMMOVABLE, PersistentDataType.BOOLEAN, true) } })
         ) { click ->
             val player = click.player
-            if(click.type == ClickType.LEFT) {
-                player.playSound(Sounds.INTERFACE_ERROR)
-            }
-            if(click.type == ClickType.RIGHT) {
-                player.playSound(Sounds.INTERFACE_ENTER_SUB_MENU)
-                TBDInterfaces.newPreviousSalesExchangeInterface(player, PlainTextComponentSerializer.plainText().serialize(element.effectiveName()).removeSuffix(" Token"), TBDInterfaceType.ISLAND_EXCHANGE_HISTORY)
+            when(click.type) {
+                ClickType.LEFT -> {
+                    if(element.type in listOf(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS, Material.LEATHER_HORSE_ARMOR)) {
+                        player.playSound(Sounds.INTERFACE_ENTER_SUB_MENU)
+                        TBDInterfaces.newInspectCosmeticInterface(player, PlainTextComponentSerializer.plainText().serialize(element.effectiveName()).removeSuffix(" Token"), TBDInterfaceType.ISLAND_COSMETIC_INSPECT)
+                    } else {
+                        player.playSound(Sounds.INTERFACE_ERROR)
+                    }
+                }
+                ClickType.RIGHT -> {
+                    player.playSound(Sounds.INTERFACE_ENTER_SUB_MENU)
+                    TBDInterfaces.newPreviousSalesExchangeInterface(player, PlainTextComponentSerializer.plainText().serialize(element.effectiveName()).removeSuffix(" Token"), TBDInterfaceType.ISLAND_EXCHANGE_HISTORY)
+                } else -> {
+                    player.playSound(Sounds.INTERFACE_ERROR)
+                }
             }
         }
     }
@@ -556,7 +651,8 @@ class PaginatedIslandExchangeMenu(items: List<ItemStack>): PaginationTransformat
 enum class TBDInterfaceType(val interfaceName: String) {
     MEMORY_ARCHIVE("TBD SMP Memory Archive"),
     ISLAND_EXCHANGE("Island Exchange"),
-    ISLAND_EXCHANGE_HISTORY("Island Exchange: Past Sales")
+    ISLAND_EXCHANGE_HISTORY("Island Exchange: Past Sales"),
+    ISLAND_COSMETIC_INSPECT("Island: Cosmetic Details")
 }
 
 enum class MemoryFilter(val memoryFilterName: String, val memoryFilterConfigSuffix: String) {

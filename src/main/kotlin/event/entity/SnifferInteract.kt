@@ -11,6 +11,6 @@ object SnifferInteract {
         if (sniffer.passengers.isNotEmpty()) return
         if (player.vehicle != null) return
 
-        sniffer.addPassenger(player);
+        sniffer.addPassenger(player)
     }
 }
