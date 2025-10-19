@@ -40,6 +40,7 @@ object IslandAPI {
                 val rarity = cosmeticToken.rarity.convertRarity()
                 val item = ItemStack(getCosmeticMaterial(cosmeticToken.cosmetic.category), listing.amount)
                 var meta = item.itemMeta
+                meta.setMaxStackSize(64)
                 meta.displayName(Formatting.allTags.deserialize("<!i><${rarity.colourHex}>${cosmeticToken.name} Token"))
                 meta.lore(listOf(
                     Formatting.allTags.deserialize("<!i><white>${rarity.rarityGlyph}${ItemType.CONSUMABLE.typeGlyph}"),
