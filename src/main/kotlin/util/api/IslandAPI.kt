@@ -211,6 +211,7 @@ object IslandAPI {
             "Opal Style Shard" -> Material.WHITE_DYE
             "Ultimate Cyber Surge Crate" -> Material.BARREL
             "Limited Sea Monsters Crate (2025)" -> Material.BARREL
+            "Limited Halloween Crate (2025)" -> Material.BARREL
             else -> Material.STRUCTURE_VOID
         }
     }
@@ -255,6 +256,13 @@ object IslandAPI {
                     Formatting.allTags.deserialize("<!i>"),
                     Formatting.allTags.deserialize("<!i><aqua>A crate containing a random limited"),
                     Formatting.allTags.deserialize("<!i><aqua>cosmetic from the <white>2025 Sea Monsters"),
+                    Formatting.allTags.deserialize("<!i><white>Event Machine<aqua>."),
+                    Formatting.allTags.deserialize("<!i>")
+                )
+                "Limited Halloween Crate (2025)" -> listOf(
+                    Formatting.allTags.deserialize("<!i>"),
+                    Formatting.allTags.deserialize("<!i><aqua>A crate containing a random limited"),
+                    Formatting.allTags.deserialize("<!i><aqua>cosmetic from the <white>2025 Halloween"),
                     Formatting.allTags.deserialize("<!i><white>Event Machine<aqua>."),
                     Formatting.allTags.deserialize("<!i>")
                 )
