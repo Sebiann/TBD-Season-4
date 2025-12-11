@@ -28,8 +28,8 @@ class Totemify {
             return
         }
 
-        if (player.inventory.itemInMainHand.type == TOTEM_OF_UNDYING) {
-            player.sendMessage(Formatting.allTags.deserialize("<red>You can't totemify a Totem of Undying."))
+        if (player.inventory.itemInMainHand.type == TOTEM_OF_UNDYING || isItemTotemified(player.inventory.itemInMainHand)) {
+            player.sendMessage(Formatting.allTags.deserialize("<red>You can't totemify something that's already Totemified."))
             return
         }
 
@@ -39,20 +39,27 @@ class Totemify {
         }
 
         val slot = player.inventory.first(TOTEM_OF_UNDYING)
-        player.inventory.getItem(slot)?.amount -= 1
+        if (player.gameMode !== GameMode.CREATIVE) {
+            player.inventory.getItem(slot)?.amount -= 1
+        }
         val deathProtection = io.papermc.paper.datacomponent.item.DeathProtection.deathProtection().build()
         val newItem = player.inventory.itemInMainHand
         val itemMeta = newItem.itemMeta
         itemMeta.lore(listOf(
             Formatting.allTags.deserialize("<tbdcolour>☥ Death Protection Active")
         ))
-        newItem.setData(DataComponentTypes.DEATH_PROTECTION, deathProtection)
         newItem.itemMeta = itemMeta
+        newItem.setData(DataComponentTypes.DEATH_PROTECTION, deathProtection)
         player.sendMessage(Formatting.allTags.deserialize("<tbdcolour>Totemified item!"))
         player.playSound(RENAME_ITEM)
     }
 
     fun hasTotemInInventory(player: Player): Boolean {
         return player.inventory.contains(TOTEM_OF_UNDYING, 1)
+    }
+
+    fun isItemTotemified(item: org.bukkit.inventory.ItemStack): Boolean {
+        val deathProtection = item.getData(DataComponentTypes.DEATH_PROTECTION)
+        return deathProtection != null
     }
 }
